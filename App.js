@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Text, View } from "react-native";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
 import { Asset } from "expo-asset";
@@ -13,12 +12,15 @@ import { ApolloProvider } from "react-apollo-hooks";
 import apolloClientOptions from "./apollo";
 import { YellowBox } from "react-native";
 import styles from "./styles";
+import NavController from "./components/NavController";
+import { AuthProvider } from "./AuthContext";
+YellowBox.ignoreWarnings(["Remote debugger"]);
 
 export default function App() {
 	const [loaded, setLoaded] = useState(false);
 	const [client, setClient] = useState(null);
 	const [isLoggedIn, setIsLoggedIn] = useState(null);
-	YellowBox.ignoreWarnings(["Remote debugger"]);
+
 	const preLoad = async () => {
 		try {
 			await Font.loadAsync({
@@ -34,12 +36,14 @@ export default function App() {
 				cache,
 				...apolloClientOptions,
 			});
+
 			const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
-			if (isLoggedIn === null || isLoggedIn === false) {
+			if (!isLoggedIn || isLoggedIn === "false") {
 				setIsLoggedIn(false);
 			} else {
 				setIsLoggedIn(true);
 			}
+
 			setLoaded(true);
 			setClient(client);
 		} catch (e) {
@@ -49,10 +53,13 @@ export default function App() {
 	useEffect(() => {
 		preLoad();
 	}, []);
+
 	return loaded && client && isLoggedIn !== null ? (
 		<ApolloProvider client={client}>
 			<ThemeProvider theme={styles}>
-				<View>{isLoggedIn === true ? <Text>I'm in</Text> : <Text>I'm out</Text>}</View>
+				<AuthProvider isLoggedIn={isLoggedIn}>
+					<NavController />
+				</AuthProvider>
 			</ThemeProvider>
 		</ApolloProvider>
 	) : (
