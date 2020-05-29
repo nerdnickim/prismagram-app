@@ -20,7 +20,7 @@ const PhotoTabs = () => {
 
 export default () => {
 	return (
-		<StackNavigator.Navigator initialRouteName="Photos" headerMode="none">
+		<StackNavigator.Navigator initialRouteName="Photos">
 			<StackNavigator.Screen name="PhotoTabs" children={PhotoTabs} />
 			<StackNavigator.Screen name="UploadPhoto" component={UploadPhoto} />
 		</StackNavigator.Navigator>
