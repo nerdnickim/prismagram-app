@@ -12,12 +12,8 @@ const Text = styled.Text``;
 
 export default ({ navigation }) => (
 	<View>
-		<Text>Auth Home</Text>
-		<TouchableOpacity onPress={() => navigation.navigate("Login")}>
-			<Text>Go to Login</Text>
-		</TouchableOpacity>
-		<TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-			<Text>Go to SignUp</Text>
+		<TouchableOpacity onPress={() => navigation.navigate("UploadPhoto")}>
+			<Text>Take Photo</Text>
 		</TouchableOpacity>
 	</View>
 );

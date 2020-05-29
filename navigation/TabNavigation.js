@@ -1,25 +1,31 @@
-import "react-native-gesture-handler";
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import SignUp from "../screens/Auth/Signup";
-import AuthHome from "../screens/Auth/AuthHome";
-import Login from "../screens/Auth/Login";
-import Confirm from "../screens/Auth/Confirm";
 import { View } from "react-native";
+import Home from "../screens/Home";
+import Search from "../screens/Search";
+import Notifications from "../screens/Notifications";
+import Profile from "../screens/Profile";
+import PhotoNavigation from "./PhotoNavigation";
 
 const TabNavigation = createBottomTabNavigator();
 
 export default () => {
 	return (
-		<NavigationContainer>
-			<TabNavigation.Navigator>
-				<TabNavigation.Screen name="Good" component={SignUp}></TabNavigation.Screen>
-				<TabNavigation.Screen name="AuthHome" component={AuthHome}></TabNavigation.Screen>
-				<TabNavigation.Screen name="Add" component={View}></TabNavigation.Screen>
-				<TabNavigation.Screen name="Login" component={Login}></TabNavigation.Screen>
-				<TabNavigation.Screen name="Confirm" component={Confirm}></TabNavigation.Screen>
-			</TabNavigation.Navigator>
-		</NavigationContainer>
+		<TabNavigation.Navigator>
+			<TabNavigation.Screen name="Home" component={Home} />
+			<TabNavigation.Screen name="Search" component={Search} />
+			<TabNavigation.Screen
+				name="Add"
+				component={View}
+				listeners={({ navigation }) => ({
+					tabPress: (e) => {
+						e.preventDefault();
+						navigation.navigate("PhotoNavigation");
+					},
+				})}
+			/>
+			<TabNavigation.Screen name="Notifications" component={Notifications} />
+			<TabNavigation.Screen name="Profile" component={Profile} />
+		</TabNavigation.Navigator>
 	);
 };
