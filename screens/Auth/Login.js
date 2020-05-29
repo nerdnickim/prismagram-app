@@ -16,15 +16,15 @@ const View = styled.View`
 
 const Text = styled.Text``;
 
-export default () => {
+export default ({ navigation }) => {
 	const emailInput = useInput("");
 	const [loading, setLoading] = useState(false);
-	const [requestSecret] = useMutation(LOG_IN, {
+	const [requestSecretMutation] = useMutation(LOG_IN, {
 		variables: { email: emailInput.value },
 	});
 	const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-	const handleLogin = async ({ navigation }) => {
+	const handleLogin = async () => {
 		const { value } = emailInput;
 		if (value === "") {
 			return Alert.alert("Email can't be empty");
@@ -35,9 +35,16 @@ export default () => {
 		}
 		try {
 			setLoading(true);
-			await requestSecret();
-			Alert.alert("Check your email");
-			navigation.navigate("Confirm");
+			const {
+				data: { requestSecret },
+			} = await requestSecretMutation();
+			if (requestSecret) {
+				Alert.alert("Check your email");
+				navigation.navigate("Confirm");
+			} else {
+				Alert.alert("Account not found");
+				navigation.navigate("SignUp");
+			}
 		} catch (e) {
 			Alert.alert("Can't Log in");
 		} finally {
@@ -52,7 +59,7 @@ export default () => {
 					placeholder="Email"
 					keyboardType="email-address"
 					returnKeyType="send"
-					onEndEditing={handleLogin}
+					onSubmitEditing={handleLogin}
 					autoCorrect={false}
 				/>
 				<AuthButton loading={loading} onPress={handleLogin} text="Log In" />
