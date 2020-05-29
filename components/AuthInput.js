@@ -40,7 +40,7 @@ const AuthInput = ({
 );
 
 AuthInput.propTypes = {
-	placeHolder: PropTypes.string.isRequired,
+	placeholder: PropTypes.string.isRequired,
 	value: PropTypes.string.isRequired,
 	keyboardType: PropTypes.oneOf([
 		"default",
