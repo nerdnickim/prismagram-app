@@ -1,12 +1,12 @@
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import Home from "../screens/Tabs/Home";
 import Search from "../screens/Tabs/Search";
 import Notifications from "../screens/Tabs/Notifications";
 import Profile from "../screens/Tabs/Profile";
 import stackFactory from "./stackFactory";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import MessagesLink from "../components/MessagesLink";
 
 const TabNavigation = createBottomTabNavigator();
 
@@ -20,11 +20,7 @@ export default () => {
 					initRoute: Home,
 					initialConfig: {
 						title: "Home",
-						headerRight: () => (
-							<TouchableOpacity>
-								<Text>Hi</Text>
-							</TouchableOpacity>
-						),
+						headerRight: () => <MessagesLink />,
 					},
 				}}
 			/>
