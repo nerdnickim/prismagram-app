@@ -14,18 +14,18 @@ const View = styled.View`
 	flex: 1;
 `;
 
-const Text = styled.Text``;
-
 export default ({ navigation }) => {
 	const emailInput = useInput("");
 	const [loading, setLoading] = useState(false);
 	const [requestSecretMutation] = useMutation(LOG_IN, {
 		variables: { email: emailInput.value },
 	});
+
 	const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 	const handleLogin = async () => {
 		const { value } = emailInput;
+
 		if (value === "") {
 			return Alert.alert("Email can't be empty");
 		} else if (!value.includes("@") || !value.includes(".")) {
@@ -40,10 +40,10 @@ export default ({ navigation }) => {
 			} = await requestSecretMutation();
 			if (requestSecret) {
 				Alert.alert("Check your email");
-				navigation.navigate("Confirm");
+				navigation.navigate("Confirm", { email: value });
 			} else {
 				Alert.alert("Account not found");
-				navigation.navigate("SignUp");
+				navigation.navigate("SignUp", { email: value });
 			}
 		} catch (e) {
 			Alert.alert("Can't Log in");
