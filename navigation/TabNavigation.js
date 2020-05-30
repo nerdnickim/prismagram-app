@@ -1,25 +1,36 @@
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View } from "react-native";
+import { View, Image, Platform } from "react-native";
 import Home from "../screens/Tabs/Home";
 import Search from "../screens/Tabs/Search";
 import Notifications from "../screens/Tabs/Notifications";
 import Profile from "../screens/Tabs/Profile";
 import stackFactory from "./stackFactory";
 import MessagesLink from "../components/MessagesLink";
+import NavIcon from "../components/NavIcon";
 
 const TabNavigation = createBottomTabNavigator();
 
 export default () => {
 	return (
-		<TabNavigation.Navigator>
+		<TabNavigation.Navigator
+			tabBarOptions={{ showLabel: false, tabStyle: { backgroundColor: "#EFEEEF" } }}
+		>
 			<TabNavigation.Screen
 				name="Home"
 				component={stackFactory}
+				options={{
+					tabBarIcon: ({ focused }) => (
+						<NavIcon
+							focused={focused}
+							name={Platform.OS === "ios" ? "ios-home" : "md-home"}
+						/>
+					),
+				}}
 				initialParams={{
 					initRoute: Home,
 					initialConfig: {
-						title: "Home",
+						headerTitle: <NavIcon name="logo-instagram" size={36} />,
 						headerRight: () => <MessagesLink />,
 					},
 				}}
@@ -27,6 +38,14 @@ export default () => {
 			<TabNavigation.Screen
 				name="Search"
 				component={stackFactory}
+				options={{
+					tabBarIcon: ({ focused }) => (
+						<NavIcon
+							focused={focused}
+							name={Platform.OS === "ios" ? "ios-search" : "md-search"}
+						/>
+					),
+				}}
 				initialParams={{
 					initRoute: Search,
 					initialConfig: {
@@ -37,6 +56,15 @@ export default () => {
 			<TabNavigation.Screen
 				name="Add"
 				component={View}
+				options={{
+					tabBarIcon: ({ focused }) => (
+						<NavIcon
+							focused={focused}
+							name={Platform.OS === "ios" ? "ios-add" : "md-add"}
+							size={40}
+						/>
+					),
+				}}
 				listeners={({ navigation }) => ({
 					tabPress: (e) => {
 						e.preventDefault();
@@ -47,6 +75,22 @@ export default () => {
 			<TabNavigation.Screen
 				name="Notifications"
 				component={stackFactory}
+				options={{
+					tabBarIcon: ({ focused }) => (
+						<NavIcon
+							focused={focused}
+							name={
+								Platform.OS === "ios"
+									? focused
+										? "ios-heart"
+										: "ios-heart-empty"
+									: focused
+									? "md-heart"
+									: "md-heart-empty"
+							}
+						/>
+					),
+				}}
 				initialParams={{
 					initRoute: Notifications,
 					initialConfig: {
@@ -57,6 +101,14 @@ export default () => {
 			<TabNavigation.Screen
 				name="Profile"
 				component={stackFactory}
+				options={{
+					tabBarIcon: ({ focused }) => (
+						<NavIcon
+							focused={focused}
+							name={Platform.OS === "ios" ? "ios-person" : "md-person"}
+						/>
+					),
+				}}
 				initialParams={{
 					initRoute: Profile,
 					initialConfig: {

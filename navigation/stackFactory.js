@@ -8,7 +8,12 @@ export default ({ route }) => {
 	const { initRoute, initialConfig } = route.params;
 
 	return (
-		<StackFactory.Navigator>
+		<StackFactory.Navigator
+			screenOptions={{
+				headerStyle: { backgroundColor: "#EFEEEF" },
+				cardStyle: { backgroundColor: "white" },
+			}}
+		>
 			<StackFactory.Screen
 				name={route.name}
 				component={initRoute}
