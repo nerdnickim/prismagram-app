@@ -19,6 +19,7 @@ YellowBox.ignoreWarnings(["Remote debugger"]);
 export default function App() {
 	const [loaded, setLoaded] = useState(false);
 	const [client, setClient] = useState(null);
+	const [isLoggedIn, setIsLoggedIn] = useState(null);
 
 	const preLoad = async () => {
 		try {
@@ -35,7 +36,12 @@ export default function App() {
 				cache,
 				...apolloClientOptions,
 			});
-
+			const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
+			if (!isLoggedIn || isLoggedIn === "false") {
+				setIsLoggedIn(false);
+			} else {
+				setIsLoggedIn(true);
+			}
 			setLoaded(true);
 			setClient(client);
 		} catch (e) {
@@ -46,10 +52,10 @@ export default function App() {
 		preLoad();
 	}, []);
 
-	return loaded && client ? (
+	return loaded && client && isLoggedIn !== null ? (
 		<ApolloProvider client={client}>
 			<ThemeProvider theme={styles}>
-				<AuthProvider>
+				<AuthProvider isLoggedIn={isLoggedIn}>
 					<NavController />
 				</AuthProvider>
 			</ThemeProvider>
