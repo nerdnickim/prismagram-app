@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Home from "../screens/Tabs/Home";
+import { stackStyle } from "./config";
 
 const StackFactory = createStackNavigator();
 
@@ -10,7 +10,7 @@ export default ({ route }) => {
 	return (
 		<StackFactory.Navigator
 			screenOptions={{
-				headerStyle: { backgroundColor: "#EFEEEF" },
+				headerStyle: { ...stackStyle },
 				cardStyle: { backgroundColor: "white" },
 			}}
 		>

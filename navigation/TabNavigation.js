@@ -8,13 +8,14 @@ import Profile from "../screens/Tabs/Profile";
 import stackFactory from "./stackFactory";
 import MessagesLink from "../components/MessagesLink";
 import NavIcon from "../components/NavIcon";
+import { stackStyle } from "./config";
 
 const TabNavigation = createBottomTabNavigator();
 
 export default () => {
 	return (
 		<TabNavigation.Navigator
-			tabBarOptions={{ showLabel: false, tabStyle: { backgroundColor: "#EFEEEF" } }}
+			tabBarOptions={{ showLabel: false, style: { ...stackStyle } }}
 		>
 			<TabNavigation.Screen
 				name="Home"
