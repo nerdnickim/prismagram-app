@@ -4,6 +4,7 @@ import { ScrollView, RefreshControl } from "react-native";
 import Loader from "../../components/Loader";
 import { useQuery } from "react-apollo-hooks";
 import { FEED_QUERY } from "../../sharedQueries";
+import Post from "../../components/Post";
 
 const View = styled.View`
 	justify-content: center;
@@ -31,7 +32,13 @@ export default () => {
 		<ScrollView
 			refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} />}
 		>
-			{loading ? <Loader /> : null}
+			{loading ? (
+				<Loader />
+			) : (
+				data &&
+				data.seeFeed &&
+				data.seeFeed.map((post) => <Post key={post.id} {...post} />)
+			)}
 		</ScrollView>
 	);
 };
