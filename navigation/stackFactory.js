@@ -2,6 +2,7 @@ import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { stackStyle } from "./config";
 import Detail from "../screens/Detail";
+import styles from "../styles";
 
 const StackFactory = createStackNavigator();
 
@@ -20,7 +21,14 @@ export default ({ route }) => {
 				component={initRoute}
 				options={initialConfig}
 			/>
-			<StackFactory.Screen name="Detail" children={Detail} />
+			<StackFactory.Screen
+				name="Detail"
+				children={Detail}
+				options={{
+					headerBackTitleVisible: false,
+					headerTintColor: styles.blackColor,
+				}}
+			/>
 		</StackFactory.Navigator>
 	);
 };

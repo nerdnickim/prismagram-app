@@ -9,6 +9,7 @@ const SquearePhoto = ({ navigation, files = [], id }) => (
 	<TouchableOpacity onPress={() => navigation.navigate("Detail", { id })}>
 		<Image
 			source={{ uri: files[0].url }}
+			resizeMode="cover"
 			style={{
 				width: constans.width / 3,
 				height: constans.height / 6,

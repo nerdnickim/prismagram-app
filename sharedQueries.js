@@ -1,32 +1,20 @@
 import { gql } from "apollo-boost";
+import { POST_FRAGMENT } from "./fragments";
 
 export const FEED_QUERY = gql`
 	{
 		seeFeed {
-			id
-			location
-			caption
-			user {
-				id
-				avatar
-				username
-			}
-			files {
-				id
-				url
-			}
-			likeCount
-			commentCount
-			isLiked
-			comments {
-				id
-				text
-				user {
-					id
-					username
-				}
-			}
-			createdAt
+			...PostParts
 		}
 	}
+	${POST_FRAGMENT}
+`;
+
+export const POST_DETAIL = gql`
+	query seeFullPost($id: String!) {
+		seeFullPost(id: $id) {
+			...PostParts
+		}
+	}
+	${POST_FRAGMENT}
 `;
