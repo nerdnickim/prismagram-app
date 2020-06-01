@@ -1,10 +1,19 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
 import { Image, Platform } from "react-native";
 import Swiper from "react-native-swiper";
-import constans from "../constans";
+import styled from "styled-components";
+import PropTypes from "prop-types";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
+import constans from "../constans";
+import styles from "../styles";
+import { gql } from "apollo-boost";
+import { useMutation } from "react-apollo-hooks";
+
+export const TOGGLE_LIKE = gql`
+	mutation toggleLike($postId: String!) {
+		toggleLike(postId: $postId)
+	}
+`;
 
 const Container = styled.View`
 	margin-bottom: 16px;
@@ -51,6 +60,7 @@ const CommentsCount = styled.Text`
 `;
 
 const Post = ({
+	id,
 	user,
 	location,
 	files = [],
@@ -59,6 +69,28 @@ const Post = ({
 	comments = [],
 	isLiked,
 }) => {
+	const [isLikedS, setIsLiked] = useState(isLiked);
+	const [toggleLikeMutation] = useMutation(TOGGLE_LIKE, {
+		variables: {
+			postId: id,
+		},
+	});
+	const [likeCountS, setLikeCountS] = useState(likeCount);
+
+	const toggleLike = async () => {
+		if (isLikedS === true) {
+			setLikeCountS(likeCountS - 1);
+		} else {
+			setLikeCountS(likeCountS + 1);
+		}
+		setIsLiked((p) => !p);
+		try {
+			await toggleLikeMutation();
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	return (
 		<Container>
 			<Header>
@@ -89,8 +121,18 @@ const Post = ({
 					<Touchable>
 						<IconContainer>
 							<Ionicons
+								onPress={toggleLike}
 								size={24}
-								name={Platform.OS === "ios" ? "ios-heart-empty" : "md-heart-empty"}
+								color={isLikedS ? styles.redColor : styles.blackColor}
+								name={
+									Platform.OS === "ios"
+										? isLikedS
+											? "ios-heart"
+											: "ios-heart-empty"
+										: isLikedS
+										? "md-heart"
+										: "md-heart-empty"
+								}
 							/>
 						</IconContainer>
 					</Touchable>
@@ -101,7 +143,7 @@ const Post = ({
 					</Touchable>
 				</IconsContainer>
 				<Touchable>
-					<Bold>{likeCount === 1 ? "1 likes" : `${likeCount} likes`}</Bold>
+					<Bold>{likeCountS === 1 ? "1 likes" : `${likeCountS} likes`}</Bold>
 				</Touchable>
 				<Caption>
 					<Bold>{user.username}</Bold> {caption}
