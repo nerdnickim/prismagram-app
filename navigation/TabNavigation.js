@@ -17,6 +17,7 @@ export default () => {
 		<TabNavigation.Navigator
 			initialRouteName="Search"
 			tabBarOptions={{ showLabel: false, style: { ...stackStyle } }}
+			tabBarAccessibilityLabel
 		>
 			<TabNavigation.Screen
 				name="Home"

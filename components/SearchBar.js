@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { TextInput } from "react-native";
 import constans from "../constans";
 import styles from "../styles";
-import { Entypo } from "@expo/vector-icons";
 
 const SearchBar = ({ onChange, value, onSubmit }) => (
 	<TextInput

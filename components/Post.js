@@ -165,12 +165,6 @@ Post.propTypes = {
 		avatar: PropTypes.string,
 		username: PropTypes.string.isRequired,
 	}).isRequired,
-	files: PropTypes.arrayOf(
-		PropTypes.shape({
-			id: PropTypes.string.isRequired,
-			url: PropTypes.string.isRequired,
-		})
-	).isRequired,
 	likeCount: PropTypes.number,
 	isLiked: PropTypes.bool.isRequired,
 	comments: PropTypes.arrayOf(

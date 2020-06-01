@@ -5,6 +5,8 @@ import useInput from "../../hooks/useInput";
 import { gql } from "apollo-boost";
 import { useQuery } from "react-apollo-hooks";
 import { ScrollView, RefreshControl } from "react-native";
+import Loader from "../../components/Loader";
+import SquearePhoto from "../../components/SquarePhoto";
 
 export const SEARCH = gql`
 	query search($term: String!) {
@@ -27,11 +29,7 @@ export const SEARCH = gql`
 	}
 `;
 
-const View = styled.View`
-	justify-content: center;
-	align-items: center;
-	flex: 1;
-`;
+const View = styled.View``;
 
 const Text = styled.Text``;
 
@@ -39,25 +37,28 @@ export default ({ navigation }) => {
 	const valueInput = useInput("");
 	const [refreshing, setRefreshing] = React.useState(false);
 	const { data, loading, refetch } = useQuery(SEARCH, {
-		skip: valueInput.value === undefined,
 		variables: { term: valueInput.value },
+		skip: valueInput.value === undefined || valueInput.value === "",
+		fetchPolicy: "network-only",
 	});
 
 	const refresh = async () => {
 		try {
 			setRefreshing(true);
-			await refetch({ variables: { term: valueInput.value } });
+			await refetch({
+				variables: {
+					term: valueInput.value,
+				},
+			});
 		} catch (e) {
 			console.log(e);
 		} finally {
 			setRefreshing(false);
-			console.log(data, loading);
 		}
 	};
 
 	const onSubmit = async (term) => {
 		await refetch({ variables: { term } });
-		console.log(term);
 	};
 
 	React.useLayoutEffect(() => {
@@ -67,9 +68,7 @@ export default ({ navigation }) => {
 					<SearchBar
 						value={valueInput.value}
 						onChange={(text) => valueInput.onChange(text)}
-						onSubmit={() => {
-							onSubmit(valueInput.value);
-						}}
+						onSubmit={() => onSubmit(valueInput.value)}
 					/>
 				);
 			},
@@ -78,6 +77,14 @@ export default ({ navigation }) => {
 	return (
 		<ScrollView
 			refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} />}
-		></ScrollView>
+		>
+			{loading ? (
+				<Loader />
+			) : (
+				data &&
+				data.searchPost &&
+				data.searchPost.map((post) => <SquearePhoto key={post.id} {...post} />)
+			)}
+		</ScrollView>
 	);
 };
