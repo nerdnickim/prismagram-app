@@ -21,6 +21,7 @@ const SearchBar = ({ onChange, value, onSubmit }) => (
 		value={value}
 		placeholder={"Search"}
 		placeholderTextColor={styles.darkGreyColor}
+		autoCorrect={false}
 	/>
 );
 
