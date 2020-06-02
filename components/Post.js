@@ -101,7 +101,7 @@ const Post = ({
 				>
 					<Image
 						style={{ width: 40, height: 40, borderRadius: 20 }}
-						source={{ uri: user.avatar }}
+						source={{ uri: user.avatar || avatar }}
 					/>
 				</Touchable>
 				<Touchable

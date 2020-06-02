@@ -55,33 +55,8 @@ export const USER_FRAGMENT = gql`
 		followersCount
 		postsCount
 		posts {
-			id
-			location
-			caption
-			isLiked
-			comments {
-				id
-				text
-				user {
-					id
-					username
-				}
-			}
-			createdAt
-			files {
-				id
-				url
-			}
-			likes {
-				id
-				user {
-					id
-					avatar
-					username
-				}
-			}
-			likeCount
-			commentCount
+			...PostParts
 		}
 	}
+	${POST_FRAGMENT}
 `;

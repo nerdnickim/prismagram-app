@@ -24,6 +24,7 @@ export default ({ navigation }) => {
 	return (
 		<ScrollView>
 			{loading ? <Loader /> : data && data.me && <UserProfile {...data.me} />}
+			{console.log(data.me)}
 		</ScrollView>
 	);
 };
