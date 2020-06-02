@@ -37,6 +37,7 @@ export default ({ route }) => {
 				options={{
 					headerBackTitleVisible: false,
 					headerTintColor: styles.blackColor,
+					title: route.state?.routes[1]?.params?.username,
 				}}
 			/>
 		</StackFactory.Navigator>

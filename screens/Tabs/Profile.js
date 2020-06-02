@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { useQuery } from "react-apollo-hooks";
-import { GET_USER, ME } from "../../sharedQueries";
+import { ME } from "../../sharedQueries";
 import { ScrollView } from "react-native";
 import Loader from "../../components/Loader";
 import UserProfile from "../../components/UserProfile";
