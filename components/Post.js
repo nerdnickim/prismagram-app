@@ -8,6 +8,7 @@ import constans from "../constans";
 import styles from "../styles";
 import { gql } from "apollo-boost";
 import { useMutation } from "react-apollo-hooks";
+import { withNavigation } from "@react-navigation/compat";
 
 export const TOGGLE_LIKE = gql`
 	mutation toggleLike($postId: String!) {
@@ -68,6 +69,7 @@ const Post = ({
 	caption,
 	comments = [],
 	isLiked,
+	navigation,
 }) => {
 	const [isLikedS, setIsLiked] = useState(isLiked);
 	const [toggleLikeMutation] = useMutation(TOGGLE_LIKE, {
@@ -94,13 +96,17 @@ const Post = ({
 	return (
 		<Container>
 			<Header>
-				<Touchable>
+				<Touchable
+					onPress={() => navigation.navigate("UserDetail", { username: user.username })}
+				>
 					<Image
 						style={{ width: 40, height: 40, borderRadius: 20 }}
 						source={{ uri: user.avatar }}
 					/>
 				</Touchable>
-				<Touchable>
+				<Touchable
+					onPress={() => navigation.navigate("UserDetail", { username: user.username })}
+				>
 					<HeaderUserContainer>
 						<Bold>{user.username}</Bold>
 						<Location>{location}</Location>
@@ -183,4 +189,4 @@ Post.propTypes = {
 	location: PropTypes.string,
 };
 
-export default Post;
+export default withNavigation(Post);

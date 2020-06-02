@@ -27,3 +27,61 @@ export const POST_FRAGMENT = gql`
 		createdAt
 	}
 `;
+
+export const USER_FRAGMENT = gql`
+	fragment UserParts on User {
+		id
+		avatar
+		username
+		firstName
+		lastName
+		fullName
+		isFollowing
+		bio
+		isMe
+		following {
+			id
+			username
+			avatar
+			isFollowing
+		}
+		followers {
+			id
+			username
+			avatar
+			isFollowing
+		}
+		followingCount
+		followersCount
+		postsCount
+		posts {
+			id
+			location
+			caption
+			isLiked
+			comments {
+				id
+				text
+				user {
+					id
+					username
+				}
+			}
+			createdAt
+			files {
+				id
+				url
+			}
+			likes {
+				id
+				user {
+					id
+					avatar
+					username
+				}
+			}
+			likeCount
+			commentCount
+		}
+	}
+`;
