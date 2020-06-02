@@ -110,6 +110,7 @@ const Post = ({
 			<Swiper style={{ height: constans.height / 2.5 }}>
 				{files.map((file) => (
 					<Image
+						resizeMode="stretch"
 						key={file.id}
 						style={{ width: constans.width, height: constans.height / 2.5 }}
 						source={{ uri: file.url }}

@@ -8,8 +8,8 @@ import { withNavigation } from "@react-navigation/compat";
 const SquearePhoto = ({ navigation, files = [], id }) => (
 	<TouchableOpacity onPress={() => navigation.navigate("Detail", { id })}>
 		<Image
+			resizeMode="stretch"
 			source={{ uri: files[0].url }}
-			resizeMode="cover"
 			style={{
 				width: constans.width / 3,
 				height: constans.height / 6,

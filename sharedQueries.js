@@ -18,3 +18,30 @@ export const POST_DETAIL = gql`
 	}
 	${POST_FRAGMENT}
 `;
+
+export const ME = gql`
+	{
+		me {
+			id
+			username
+			updatedAt
+			isMe
+			posts {
+				id
+				isLiked
+				files {
+					id
+					url
+				}
+				likes {
+					id
+					user {
+						id
+						avatar
+						username
+					}
+				}
+			}
+		}
+	}
+`;

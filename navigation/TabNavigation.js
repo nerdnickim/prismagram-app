@@ -15,7 +15,6 @@ const TabNavigation = createBottomTabNavigator();
 export default () => {
 	return (
 		<TabNavigation.Navigator
-			initialRouteName="Search"
 			tabBarOptions={{ showLabel: false, style: { ...stackStyle } }}
 			tabBarAccessibilityLabel
 		>
