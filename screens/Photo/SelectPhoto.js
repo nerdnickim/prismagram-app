@@ -1,9 +1,9 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import * as Permissions from "expo-permissions";
 import * as MediaLibrary from "expo-media-library";
 import Loader from "../../components/Loader";
-import { Image, ScrollView } from "react-native";
+import { Image, ScrollView, TouchableOpacity } from "react-native";
 import constans from "../../constans";
 
 const View = styled.View`
@@ -13,10 +13,13 @@ const View = styled.View`
 const Text = styled.Text``;
 
 export default () => {
-	const [loading, setLoading] = React.useState(true);
-	const [hasPermission, setHasPermission] = React.useState(false);
-	const [selected, setSelected] = React.useState();
-	const [allPhotos, setAllPhotos] = React.useState();
+	const [loading, setLoading] = useState(true);
+	const [hasPermission, setHasPermission] = useState(false);
+	const [selected, setSelected] = useState();
+	const [allPhotos, setAllPhotos] = useState();
+	const changeSelectedPhoto = (photo) => {
+		setSelected(photo);
+	};
 	const getPhotos = async () => {
 		try {
 			const { assets } = await MediaLibrary.getAssetsAsync();
@@ -38,12 +41,10 @@ export default () => {
 			}
 		} catch (e) {
 			console.log(e);
-			hasPermission(false);
-		} finally {
-			setLoading(false);
+			setHasPermission(false);
 		}
 	};
-	React.useEffect(() => {
+	useEffect(() => {
 		askPermission();
 	}, []);
 	return (
@@ -60,11 +61,19 @@ export default () => {
 							/>
 							<ScrollView contentContainerStyle={{ flexDirection: "row" }}>
 								{allPhotos.map((photo) => (
-									<Image
+									<TouchableOpacity
 										key={photo.id}
-										style={{ width: constans.width / 3, height: constans.height / 6 }}
-										source={{ uri: photo.uri }}
-									/>
+										onPress={() => changeSelectedPhoto(photo)}
+									>
+										<Image
+											style={{
+												width: constans.width / 3,
+												height: constans.height / 6,
+												opacity: photo.id === selected.id ? 0.5 : 1,
+											}}
+											source={{ uri: photo.uri }}
+										/>
+									</TouchableOpacity>
 								))}
 							</ScrollView>
 						</>
