@@ -42,10 +42,13 @@ export default () => {
 			screenOptions={{
 				headerStyle: { ...stackStyle },
 				cardStyle: { backgroundColor: "white" },
-				title: null,
 			}}
 		>
-			<StackNavigator.Screen name="PhotoTabs" children={PhotoTabs} />
+			<StackNavigator.Screen
+				name="PhotoTabs"
+				children={PhotoTabs}
+				options={{ title: "Choose Photo" }}
+			/>
 			<StackNavigator.Screen name="UploadPhoto" component={UploadPhoto} />
 		</StackNavigator.Navigator>
 	);
