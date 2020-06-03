@@ -5,6 +5,7 @@ import SelectPhoto from "../screens/Photo/SelectPhoto";
 import TakePhoto from "../screens/Photo/TakePhoto";
 import UploadPhoto from "../screens/Photo/UploadPhoto";
 import { stackStyle } from "./config";
+import styles from "../styles";
 
 const PhotoNavigator = createMaterialTopTabNavigator();
 
@@ -14,11 +15,22 @@ const PhotoTabs = () => {
 	return (
 		<PhotoNavigator.Navigator
 			tabBarPosition="bottom"
-			tabBarOptions={{ style: { ...stackStyle } }}
+			tabBarOptions={{
+				style: { ...stackStyle, paddingBottom: 10 },
+				indicatorStyle: { backgroundColor: styles.blackColor, marginBottom: 10 },
+			}}
 			sceneContainerStyle={{ backgroundColor: "white" }}
 		>
-			<PhotoNavigator.Screen name="Select" component={SelectPhoto} />
-			<PhotoNavigator.Screen name="Take" component={TakePhoto} />
+			<PhotoNavigator.Screen
+				name="Select"
+				component={SelectPhoto}
+				options={{ tabBarLabel: "Select" }}
+			/>
+			<PhotoNavigator.Screen
+				name="Take"
+				component={TakePhoto}
+				options={{ tabBarLabel: "Take" }}
+			/>
 		</PhotoNavigator.Navigator>
 	);
 };
@@ -30,6 +42,7 @@ export default () => {
 			screenOptions={{
 				headerStyle: { ...stackStyle },
 				cardStyle: { backgroundColor: "white" },
+				title: null,
 			}}
 		>
 			<StackNavigator.Screen name="PhotoTabs" children={PhotoTabs} />

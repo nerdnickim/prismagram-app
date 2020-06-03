@@ -2,11 +2,15 @@ import * as React from "react";
 import styled from "styled-components";
 import { useQuery } from "react-apollo-hooks";
 import { ME } from "../../sharedQueries";
-import { RefreshControl, SectionList, Image, TouchableOpacity } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, Image } from "react-native";
 import Loader from "../../components/Loader";
 import constans from "../../constans";
 
 const View = styled.View``;
+
+const ItemView = styled.View`
+	flex-direction: row;
+`;
 
 const Text = styled.Text`
 	align-items: center;
@@ -26,11 +30,14 @@ export default () => {
 	};
 	const { data, loading, refetch } = useQuery(ME);
 
-	const Item = ({ title }) => {
+	const Item = ({ username }) => {
 		return (
-			<View>
-				<Text>{title}</Text>
-			</View>
+			<ItemView>
+				<TouchableOpacity>
+					<Text>{username}</Text>
+				</TouchableOpacity>
+				<Text>님이 회원님의 게시물을 좋아합니다</Text>
+			</ItemView>
 		);
 	};
 
@@ -39,59 +46,19 @@ export default () => {
 			{loading ? (
 				<Loader />
 			) : (
-				data &&
-				data.me && (
-					<SectionList
-						key={data.me.id}
-						style={{ display: "flex" }}
-						contentContainerStyle={{ alignItems: "center" }}
-						refreshControl={
-							<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-						}
-						sections={[
+				data?.me && (
+					<FlatList
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						data={[
 							{
-								id: data.me.id, // Is Me user Id
-								title: ["Today"], //To Do : When push Day
-								data: data.me.posts.map((post) =>
-									post.likes.map((like) => (
-										<>
-											{data.me.id !== like.user.id ? (
-												<TouchableOpacity>
-													<Image
-														resizeMode="stretch"
-														style={{
-															width: constans.width / 10,
-															height: constans.height / 20,
-														}}
-														source={{ uri: like.user.avatar }}
-													/>
-												</TouchableOpacity>
-											) : null}
-											{data.me.id !== like.user.id ? (
-												<Text>{like.user.username}님이 회원님의 게시물을 좋아합니다</Text>
-											) : null}
-											{data.me.id !== like.user.id ? (
-												<TouchableOpacity>
-													<Image
-														resizeMode="stretch"
-														style={{
-															width: constans.width / 10,
-															height: constans.height / 20,
-														}}
-														source={{ uri: post.files[0].url }}
-													/>
-												</TouchableOpacity>
-											) : null}
-										</>
-									))
-								),
-								// To Do : username , createdAt
+								username: data?.me?.posts.map((p) => p.likes.map((l) => l.user.username)),
+								id: data?.me?.posts?.map((p) => p.likes.map((l) => l.user.id)),
 							},
 						]}
-						keyExtractor={(item, index) => item + index}
-						renderItem={({ item }) => <Item title={item} />}
-						renderSectionHeader={({ section: { title } }) => <Text>{title}</Text>}
-					></SectionList>
+						renderItem={({ item }) => item.username[0].map((i) => <Item username={i} />)}
+						keyExtractor={(item) => item.id}
+					/>
 				)
 			)}
 		</View>

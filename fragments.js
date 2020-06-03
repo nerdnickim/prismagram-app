@@ -24,6 +24,14 @@ export const POST_FRAGMENT = gql`
 				username
 			}
 		}
+		likes {
+			id
+			user {
+				id
+				avatar
+				username
+			}
+		}
 		createdAt
 	}
 `;
