@@ -5,14 +5,29 @@ import * as MediaLibrary from "expo-media-library";
 import Loader from "../../components/Loader";
 import { Image, ScrollView, TouchableOpacity } from "react-native";
 import constans from "../../constans";
+import styles from "../../styles";
 
 const View = styled.View`
 	flex: 1;
 `;
 
-const Text = styled.Text``;
+const Button = styled.TouchableOpacity`
+	width: 100px;
+	height: 30px;
+	background-color: ${styles.blueColor};
+	justify-content: center;
+	align-items: center;
+	border-radius: 4px;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+`;
 
-export default () => {
+const Text = styled.Text`
+	color: white;
+`;
+
+export default ({ navigation }) => {
 	const [loading, setLoading] = useState(true);
 	const [hasPermission, setHasPermission] = useState(false);
 	const [selected, setSelected] = useState();
@@ -44,6 +59,9 @@ export default () => {
 			setHasPermission(false);
 		}
 	};
+	const handleSelected = () => {
+		navigation.navigate("UploadPhoto", { photo: selected });
+	};
 	useEffect(() => {
 		askPermission();
 	}, []);
@@ -59,6 +77,10 @@ export default () => {
 								style={{ width: constans.width, height: constans.height / 2 }}
 								source={{ uri: selected.uri }}
 							/>
+							<Button onPress={handleSelected}>
+								<Text>Upload</Text>
+							</Button>
+
 							<ScrollView contentContainerStyle={{ flexDirection: "row" }}>
 								{allPhotos.map((photo) => (
 									<TouchableOpacity
