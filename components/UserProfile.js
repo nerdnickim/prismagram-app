@@ -126,21 +126,6 @@ UserProfile.propTypes = {
 		avatar: PropTypes.string,
 		username: PropTypes.string.isRequired,
 	}).isRequired,
-	likeCount: PropTypes.number,
-	isLiked: PropTypes.bool.isRequired,
-	comments: PropTypes.arrayOf(
-		PropTypes.shape({
-			id: PropTypes.string.isRequired,
-			text: PropTypes.string.isRequired,
-			user: PropTypes.shape({
-				id: PropTypes.string.isRequired,
-				username: PropTypes.string.isRequired,
-			}).isRequired,
-		})
-	).isRequired,
-	createdAt: PropTypes.string.isRequired,
-	caption: PropTypes.string.isRequired,
-	location: PropTypes.string,
 };
 
 export default UserProfile;

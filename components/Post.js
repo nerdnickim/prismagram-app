@@ -60,6 +60,8 @@ const CommentsCount = styled.Text`
 	font-size: 12px;
 `;
 
+const CreatedAt = styled.Text``;
+
 const Post = ({
 	id,
 	user,
@@ -70,6 +72,7 @@ const Post = ({
 	comments = [],
 	isLiked,
 	navigation,
+	createdAt,
 }) => {
 	const [isLikedS, setIsLiked] = useState(isLiked);
 	const [toggleLikeMutation] = useMutation(TOGGLE_LIKE, {
@@ -91,6 +94,32 @@ const Post = ({
 		} catch (e) {
 			console.log(e);
 		}
+	};
+
+	const gapCreatedAt = (value) => {
+		const today = new Date();
+		const timeValue = new Date(value);
+
+		const betweenTime = Math.floor(
+			Math.floor(today.getTime() - timeValue.getTime()) / 1000 / 60
+		);
+		if (betweenTime < 1) {
+			return "방금 전";
+		} else if (betweenTime < 60) {
+			return `${betweenTime}분 전`;
+		}
+
+		const betweenTimeHour = Math.floor(betweenTime / 60);
+		if (betweenTimeHour < 24) {
+			return `${betweenTimeHour}시간 전`;
+		}
+
+		const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+		if (betweenTimeDay < 365) {
+			return `${betweenTimeDay}일 전`;
+		}
+
+		return `${Math.floor(betweenTimeDay / 365)}년 전`;
 	};
 
 	return (
@@ -155,7 +184,17 @@ const Post = ({
 				<Caption>
 					<Bold>{user.username}</Bold> {caption}
 				</Caption>
-				<Touchable>
+				<CreatedAt>
+					<Bold>{gapCreatedAt(createdAt)}</Bold>
+				</CreatedAt>
+				<Touchable
+					onPress={() =>
+						navigation.navigate("CommentDetail", {
+							username: user.username,
+							id,
+						})
+					}
+				>
 					<CommentsCount>
 						See all {comments.length === 0 ? null : comments.length} comments
 					</CommentsCount>

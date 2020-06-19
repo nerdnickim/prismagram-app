@@ -4,6 +4,7 @@ import { stackStyle } from "./config";
 import Detail from "../screens/Detail";
 import styles from "../styles";
 import UserDetail from "../screens/UserDetail";
+import CommentDetail from "../screens/CommentDetail";
 
 const StackFactory = createStackNavigator();
 
@@ -38,6 +39,16 @@ export default ({ route }) => {
 					headerBackTitleVisible: false,
 					headerTintColor: styles.blackColor,
 					title: route.state?.routes[1]?.params?.username,
+				}}
+			/>
+			<StackFactory.Screen
+				name="CommentDetail"
+				component={CommentDetail}
+				options={{
+					headerBackTitleVisible: false,
+					headerTintColor: styles.blackColor,
+					title: "",
+					cardOverlayEnabled: true,
 				}}
 			/>
 		</StackFactory.Navigator>
