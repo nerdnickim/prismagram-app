@@ -38,6 +38,7 @@ const PhotoTabs = () => {
 export default () => {
 	return (
 		<StackNavigator.Navigator
+			mode="modal"
 			initialRouteName="Photos"
 			screenOptions={{
 				headerStyle: { ...stackStyle },

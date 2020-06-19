@@ -5,11 +5,16 @@ import CommentDetail from "../screens/CommentDetail";
 const CommentStack = createStackNavigator();
 
 export default ({ route }) => {
-	console.log(route);
-
 	return (
 		<CommentStack.Navigator>
-			<CommentStack.Screen name="aaa" component={CommentDetail} />
+			<CommentStack.Screen
+				name="CommentNavigation"
+				component={CommentDetail}
+				initialParams={{
+					id: route.params.id,
+					username: route.params.username,
+				}}
+			/>
 		</CommentStack.Navigator>
 	);
 };
