@@ -1,11 +1,12 @@
-import React from "react";
-import { Image } from "react-native";
+import React, { useState } from "react";
+import { Image, StyleSheet } from "react-native";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { gql } from "apollo-boost";
 import styles from "../styles";
 import { useMutation } from "react-apollo-hooks";
 import useInput from "../hooks/useInput";
+import TextNavigation from "../navigation/TextNavigation";
 
 const ADD_COMMENT = gql`
 	mutation addComment($postId: String!, $text: String!) {
@@ -21,7 +22,12 @@ const ADD_COMMENT = gql`
 	}
 `;
 
-const View = styled.View``;
+const View = styled.View`
+	display: flex;
+	justify-content: space-between;
+`;
+
+const Contain = styled.View``;
 
 const Header = styled.View`
 	border: 1px solid ${styles.lightGreyColor};
@@ -70,52 +76,93 @@ const Caption = styled.Text``;
 
 const Comment = ({ user, comments, location, caption, id }) => {
 	const commentInput = useInput("");
-	const [addCommnetMutation] = useMutation(ADD_COMMENT, {
+	const [addCommnetMutation, { loading }] = useMutation(ADD_COMMENT, {
 		variables: {
 			postId: id,
 			text: commentInput.value,
 		},
 	});
 
+	const [selfComments, setSelfComments] = useState([]);
+
+	const onSubmit = async (e) => {
+		e.preventDefault();
+		try {
+			const {
+				data: { addComment },
+			} = await addCommnetMutation();
+			setSelfComments([...selfComments, addComment]);
+			commentInput.setValue("");
+			console.log(addComment, comments);
+		} catch (e) {
+			console.log("Can't send Comment", e);
+		}
+	};
+
 	return (
 		<View>
-			<Header>
-				<TouchAble>
-					<Image
-						size={{ width: 40, height: 40, borderRadius: 20 }}
-						source={{ uri: user.avatar || avatar }}
-					/>
-				</TouchAble>
-				<TouchAble>
-					<HeaderUserContainer>
-						<Bold>{user.username}</Bold>
-						<Location>{location}</Location>
-					</HeaderUserContainer>
-				</TouchAble>
-				<Caption>{caption}</Caption>
-			</Header>
-			<Body>
-				<CommentWrapper>
-					{comments?.map((c) => (
-						<CommentContain key={c.id}>
-							<CmtUser>
-								<TouchAble>
-									<Image
-										size={{ width: 40, height: 40, borderRadius: 20 }}
-										source={{ uri: c.user.avatar }}
-									/>
-								</TouchAble>
-								<TouchAble>
-									<Bold>{c.user.username}</Bold>
-								</TouchAble>
-							</CmtUser>
+			<Contain>
+				<Header>
+					<TouchAble>
+						<Image
+							size={{ width: 40, height: 40, borderRadius: 20 }}
+							source={{ uri: user.avatar || avatar }}
+						/>
+					</TouchAble>
+					<TouchAble>
+						<HeaderUserContainer>
+							<Bold>{user.username}</Bold>
+							<Location>{location}</Location>
+						</HeaderUserContainer>
+					</TouchAble>
+					<Caption>{caption}</Caption>
+				</Header>
+				<Body>
+					<CommentWrapper>
+						{comments?.map((c) => (
+							<CommentContain key={c.id}>
+								<CmtUser>
+									<TouchAble>
+										<Image
+											size={{ width: 40, height: 40, borderRadius: 20 }}
+											source={{ uri: c.user.avatar }}
+										/>
+									</TouchAble>
+									<TouchAble>
+										<Bold>{c.user.username}</Bold>
+									</TouchAble>
+								</CmtUser>
 
-							<Text>{c.text}</Text>
-						</CommentContain>
-					))}
-				</CommentWrapper>
-			</Body>
-			<Meta></Meta>
+								<Text>{c.text}</Text>
+							</CommentContain>
+						))}
+						{selfComments?.map((c) => (
+							<CommentContain key={c.id}>
+								<CmtUser>
+									<TouchAble>
+										<Image
+											size={{ width: 40, height: 40, borderRadius: 20 }}
+											source={{ uri: c.user.avatar }}
+										/>
+									</TouchAble>
+									<TouchAble>
+										<Bold>{c.user.username}</Bold>
+									</TouchAble>
+								</CmtUser>
+
+								<Text>{c.text}</Text>
+							</CommentContain>
+						))}
+					</CommentWrapper>
+				</Body>
+			</Contain>
+			<Meta>
+				<TextNavigation
+					value={commentInput.value}
+					onChange={(text) => commentInput.onChange(text)}
+					onSubmit={onSubmit}
+				/>
+			</Meta>
 		</View>
 	);
 };

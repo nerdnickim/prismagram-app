@@ -7,6 +7,14 @@ import { Ionicons } from "@expo/vector-icons";
 import constans from "../constans";
 import SquarePhoto from "./SquarePhoto";
 import Post from "./Post";
+import { gql } from "apollo-boost";
+import { useMutation } from "react-apollo-hooks";
+
+const LOG_OUT = gql`
+	mutation logUserOut {
+		logUserOut @client
+	}
+`;
 
 const ProfileHeader = styled.View`
 	padding: 20px;
@@ -52,6 +60,12 @@ const Button = styled.View`
 	align-items: center;
 `;
 
+const LogContain = styled.View``;
+
+const LogState = styled.TouchableOpacity``;
+
+const LogText = styled.Text``;
+
 const UserProfile = ({
 	avatar,
 	postsCount,
@@ -60,10 +74,19 @@ const UserProfile = ({
 	fullName,
 	username,
 	posts,
-	user,
+	isMe,
+	navigation,
 }) => {
 	const [isGrid, setIsGrid] = useState(true);
 	const toggleGrid = () => setIsGrid((i) => !i);
+
+	const [logOut] = useMutation(LOG_OUT);
+
+	const logOutHandle = async ({ navigation }) => {
+		await logOut();
+		navigation.navigate("AuthNavigation");
+	};
+
 	return (
 		<View>
 			<ProfileHeader>
@@ -86,6 +109,13 @@ const UserProfile = ({
 							<StatName>followers</StatName>
 						</Stat>
 					</ProfileStats>
+					<LogContain>
+						{isMe ? (
+							<LogState onPress={logOutHandle}>
+								<LogText>{"Log Out"}</LogText>
+							</LogState>
+						) : null}
+					</LogContain>
 				</HeaderColumn>
 			</ProfileHeader>
 			<ProfileMeta>
