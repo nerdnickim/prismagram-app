@@ -15,7 +15,6 @@ export default ({ route }) => {
 	return (
 		<ScrollView>
 			{loading ? <Loader /> : data?.seeFullPost && <Comment {...data.seeFullPost} />}
-			{console.log(data)}
 		</ScrollView>
 	);
 };

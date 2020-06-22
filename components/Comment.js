@@ -93,7 +93,6 @@ const Comment = ({ user, comments, location, caption, id }) => {
 			} = await addCommnetMutation();
 			setSelfComments([...selfComments, addComment]);
 			commentInput.setValue("");
-			console.log(addComment, comments);
 		} catch (e) {
 			console.log("Can't send Comment", e);
 		}
