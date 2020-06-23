@@ -61,7 +61,10 @@ const Button = styled.View`
 	align-items: center;
 `;
 
-const LogContain = styled.View``;
+const LogContain = styled.View`
+	margin-top: 14px;
+	left: 20px;
+`;
 
 const BtnPress = styled.TouchableOpacity``;
 
@@ -81,7 +84,6 @@ const UserProfile = ({
 	navigation,
 }) => {
 	const [isGrid, setIsGrid] = useState(true);
-	let [follow, setFollow] = useState(false);
 	const toggleGrid = () => setIsGrid((i) => !i);
 
 	const [logOut] = useMutation(LOG_OUT);
