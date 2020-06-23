@@ -16,7 +16,8 @@ const Text = styled.Text`
 	align-items: center;
 	margin: 0 10px;
 `;
-export default () => {
+
+export default ({ navigation }) => {
 	const [refreshing, setRefreshing] = React.useState(false);
 	const onRefresh = () => {
 		try {
@@ -33,7 +34,7 @@ export default () => {
 	const Item = ({ username }) => {
 		return (
 			<ItemView>
-				<TouchableOpacity>
+				<TouchableOpacity onPress={() => navigation.navigate("UserDetail", { username })}>
 					<Text>{username}</Text>
 				</TouchableOpacity>
 				<Text>님이 회원님의 게시물을 좋아합니다</Text>
