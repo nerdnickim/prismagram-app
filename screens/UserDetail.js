@@ -14,7 +14,7 @@ export default ({ route }) => {
 
 	return (
 		<ScrollView>
-			{loading ? <Loader /> : data && data.seeUser && <UserProfile {...data.seeUser} />}
+			{loading ? <Loader /> : data?.seeUser && <UserProfile {...data.seeUser} />}
 		</ScrollView>
 	);
 };

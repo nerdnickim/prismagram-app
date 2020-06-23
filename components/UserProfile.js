@@ -9,6 +9,7 @@ import SquarePhoto from "./SquarePhoto";
 import Post from "./Post";
 import { gql } from "apollo-boost";
 import { useMutation } from "react-apollo-hooks";
+import FollowBtn from "./FollowBtn";
 
 const LOG_OUT = gql`
 	mutation logUserOut {
@@ -62,11 +63,12 @@ const Button = styled.View`
 
 const LogContain = styled.View``;
 
-const LogState = styled.TouchableOpacity``;
+const BtnPress = styled.TouchableOpacity``;
 
-const LogText = styled.Text``;
+const BtnName = styled.Text``;
 
 const UserProfile = ({
+	id,
 	avatar,
 	postsCount,
 	followers,
@@ -75,9 +77,11 @@ const UserProfile = ({
 	username,
 	posts,
 	isMe,
+	isFollowing,
 	navigation,
 }) => {
 	const [isGrid, setIsGrid] = useState(true);
+	let [follow, setFollow] = useState(false);
 	const toggleGrid = () => setIsGrid((i) => !i);
 
 	const [logOut] = useMutation(LOG_OUT);
@@ -85,6 +89,12 @@ const UserProfile = ({
 	const logOutHandle = async ({ navigation }) => {
 		await logOut();
 		navigation.navigate("AuthNavigation");
+	};
+
+	const followHandle = (e) => {
+		e.preventDefault();
+		if (isFollowing === true) {
+		}
 	};
 
 	return (
@@ -111,10 +121,12 @@ const UserProfile = ({
 					</ProfileStats>
 					<LogContain>
 						{isMe ? (
-							<LogState onPress={logOutHandle}>
-								<LogText>{"Log Out"}</LogText>
-							</LogState>
-						) : null}
+							<BtnPress onPress={logOutHandle}>
+								<BtnName>{"Log Out"}</BtnName>
+							</BtnPress>
+						) : (
+							<FollowBtn id={id} isFollowing={isFollowing} />
+						)}
 					</LogContain>
 				</HeaderColumn>
 			</ProfileHeader>
