@@ -158,9 +158,11 @@ const UserProfile = ({
 					</Button>
 				</TouchableOpacity>
 			</ButtonContainer>
-			{posts?.map((p) =>
-				isGrid ? <SquarePhoto key={p.id} {...p} /> : <Post key={p.id} {...p} />
-			)}
+			<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+				{posts?.map((p) =>
+					isGrid ? <SquarePhoto key={p.id} {...p} /> : <Post key={p.id} {...p} />
+				)}
+			</View>
 		</View>
 	);
 };

@@ -3,11 +3,16 @@ import styled from "styled-components";
 import * as Permissions from "expo-permissions";
 import * as MediaLibrary from "expo-media-library";
 import Loader from "../../components/Loader";
-import { Image, ScrollView, TouchableOpacity } from "react-native";
+import { Image, ScrollView, TouchableOpacity, Platform } from "react-native";
 import constans from "../../constans";
 import styles from "../../styles";
+import NavIcon from "../../components/NavIcon";
 
-const View = styled.View`
+const Header = styled.View`
+	position: relative;
+`;
+
+const Vieww = styled.View`
 	flex: 1;
 `;
 
@@ -27,19 +32,42 @@ const Text = styled.Text`
 	color: white;
 `;
 
+const Photos = styled.TouchableOpacity`
+	position: absolute;
+	top: 290px;
+	right: 10px;
+`;
+
+const Circle = styled.View`
+	width: 25px;
+	height: 25px;
+`;
+
 export default ({ navigation }) => {
 	const [loading, setLoading] = useState(true);
 	const [hasPermission, setHasPermission] = useState(false);
-	const [selected, setSelected] = useState();
+	const [selected = [], setSelected] = useState([]);
 	const [allPhotos, setAllPhotos] = useState();
+	let [focused, setFocued] = useState(false);
+
 	const changeSelectedPhoto = (photo) => {
 		setSelected(photo);
+		console.log(selected);
 	};
+
+	const changeFocued = () => {
+		setFocued((f) => !f);
+		multiplePhotos();
+	};
+
+	const multiplePhotos = () => {};
+
 	const getPhotos = async () => {
 		try {
 			const { assets } = await MediaLibrary.getAssetsAsync();
 			const [firstPhoto] = assets;
 			setSelected(firstPhoto);
+
 			setAllPhotos(assets);
 		} catch (e) {
 			console.log(e);
@@ -66,22 +94,35 @@ export default ({ navigation }) => {
 		askPermission();
 	}, []);
 	return (
-		<View>
+		<Vieww>
 			{loading ? (
 				<Loader />
 			) : (
-				<View>
+				<Vieww>
 					{hasPermission ? (
 						<>
-							<Image
-								style={{ width: constans.width, height: constans.height / 2 }}
-								source={{ uri: selected.uri }}
-							/>
-							<Button onPress={handleSelected}>
-								<Text>Upload</Text>
-							</Button>
+							<Header>
+								<Image
+									style={{ width: constans.width, height: constans.height / 2 }}
+									source={{ uri: selected.uri }}
+								/>
 
-							<ScrollView contentContainerStyle={{ flexDirection: "row" }}>
+								<Button onPress={handleSelected}>
+									<Text>Upload</Text>
+								</Button>
+
+								<Photos onPress={changeFocued}>
+									<NavIcon
+										name={Platform.OS === "ios" ? "ios-photos" : "md-photos"}
+										size={24}
+										color={focused ? `${styles.blueColor}` : "black"}
+									/>
+								</Photos>
+							</Header>
+
+							<ScrollView
+								contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap" }}
+							>
 								{allPhotos.map((photo) => (
 									<TouchableOpacity
 										key={photo.id}
@@ -100,8 +141,8 @@ export default ({ navigation }) => {
 							</ScrollView>
 						</>
 					) : null}
-				</View>
+				</Vieww>
 			)}
-		</View>
+		</Vieww>
 	);
 };
