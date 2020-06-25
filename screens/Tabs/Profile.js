@@ -21,6 +21,7 @@ export default ({ navigation }) => {
 			navigation.setParams("title", data.me.username);
 		}
 	}, [data]);
+
 	return (
 		<ScrollView>
 			{loading ? <Loader /> : data && data.me && <UserProfile {...data.me} />}

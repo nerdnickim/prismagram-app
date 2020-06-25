@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Image, View, TouchableOpacity, Platform } from "react-native";
@@ -10,6 +10,8 @@ import Post from "./Post";
 import { gql } from "apollo-boost";
 import { useMutation } from "react-apollo-hooks";
 import FollowBtn from "./FollowBtn";
+import { useNavigation } from "@react-navigation/native";
+import UserCustom from "./UserCustom";
 
 const LOG_OUT = gql`
 	mutation logUserOut {
@@ -81,23 +83,23 @@ const UserProfile = ({
 	posts,
 	isMe,
 	isFollowing,
-	navigation,
 }) => {
 	const [isGrid, setIsGrid] = useState(true);
 	const toggleGrid = () => setIsGrid((i) => !i);
+	const navigation = useNavigation();
 
 	const [logOut] = useMutation(LOG_OUT);
 
-	const logOutHandle = async ({ navigation }) => {
+	const logOutHandle = async () => {
 		await logOut();
 		navigation.navigate("AuthNavigation");
 	};
 
-	const followHandle = (e) => {
-		e.preventDefault();
-		if (isFollowing === true) {
-		}
-	};
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => (isMe ? <UserCustom /> : null),
+		});
+	}, []);
 
 	return (
 		<View>

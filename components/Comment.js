@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image } from "react-native";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { gql } from "apollo-boost";
@@ -7,6 +7,7 @@ import styles from "../styles";
 import { useMutation } from "react-apollo-hooks";
 import useInput from "../hooks/useInput";
 import TextNavigation from "../navigation/TextNavigation";
+import { useNavigation } from "@react-navigation/native";
 
 const ADD_COMMENT = gql`
 	mutation addComment($postId: String!, $text: String!) {
@@ -75,6 +76,7 @@ const Location = styled.Text`
 const Caption = styled.Text``;
 
 const Comment = ({ user, comments, location, caption, id }) => {
+	const navigation = useNavigation();
 	const commentInput = useInput("");
 	const [addCommnetMutation, { loading }] = useMutation(ADD_COMMENT, {
 		variables: {
@@ -144,7 +146,11 @@ const Comment = ({ user, comments, location, caption, id }) => {
 											source={{ uri: c.user.avatar }}
 										/>
 									</TouchAble>
-									<TouchAble>
+									<TouchAble
+										onPress={() =>
+											navigation.navigate("UserDetail", { username: c.user.username })
+										}
+									>
 										<Bold>{c.user.username}</Bold>
 									</TouchAble>
 								</CmtUser>

@@ -4,9 +4,7 @@ import { stackStyle } from "./config";
 import Detail from "../screens/Detail";
 import styles from "../styles";
 import UserDetail from "../screens/UserDetail";
-import CommentDetail from "../screens/CommentDetail";
-import { View } from "react-native";
-import CommentNavigation from "./CommentNavigation";
+import ProfileNavigation from "./ProfileNavigation";
 
 const StackFactory = createStackNavigator();
 

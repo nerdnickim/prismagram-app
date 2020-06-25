@@ -2,9 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 import { useQuery } from "react-apollo-hooks";
 import { ME } from "../../sharedQueries";
-import { FlatList, RefreshControl, TouchableOpacity, Image } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native";
 import Loader from "../../components/Loader";
-import constans from "../../constans";
 
 const View = styled.View``;
 
