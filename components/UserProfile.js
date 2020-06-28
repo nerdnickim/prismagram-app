@@ -70,6 +70,10 @@ const LogContain = styled.View`
 
 const BtnPress = styled.TouchableOpacity``;
 
+const FollowPress = styled.TouchableOpacity`
+	align-items: center;
+`;
+
 const BtnName = styled.Text``;
 
 const UserProfile = ({
@@ -120,12 +124,24 @@ const UserProfile = ({
 							<StatName>Posts</StatName>
 						</Stat>
 						<Stat>
-							<Bold>{following.length}</Bold>
-							<StatName>following</StatName>
+							<FollowPress
+								onPress={() =>
+									navigation.navigate("FollowingShow", { following, username, id })
+								}
+							>
+								<Bold>{following.length}</Bold>
+								<StatName>following</StatName>
+							</FollowPress>
 						</Stat>
 						<Stat>
-							<Bold>{followers.length}</Bold>
-							<StatName>followers</StatName>
+							<FollowPress
+								onPress={() =>
+									navigation.navigate("FollowerShow", { followers, username, id })
+								}
+							>
+								<Bold>{followers.length}</Bold>
+								<StatName>followers</StatName>
+							</FollowPress>
 						</Stat>
 					</ProfileStats>
 					<LogContain>
@@ -174,11 +190,6 @@ const UserProfile = ({
 
 UserProfile.propTypes = {
 	id: PropTypes.string.isRequired,
-	user: PropTypes.shape({
-		id: PropTypes.string.isRequired,
-		avatar: PropTypes.string,
-		username: PropTypes.string.isRequired,
-	}).isRequired,
 };
 
 export default UserProfile;
