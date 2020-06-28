@@ -7,7 +7,6 @@ import PhotoNavigation from "./PhotoNavigation";
 import MessageNavigation from "./MessageNavigation";
 import { stackStyle } from "./config";
 import CommentNavigation from "./CommentNavigation";
-import ProfileNavigation from "./ProfileNavigation";
 
 const MainNavigation = createStackNavigator();
 
@@ -23,7 +22,6 @@ const MainRoot = () => {
 			<MainNavigation.Screen name="bottom" children={TabNavigation} />
 			<MainNavigation.Screen name="PhotoNavigation" children={PhotoNavigation} />
 			<MainNavigation.Screen name="MessageNavigation" children={MessageNavigation} />
-			<MainNavigation.Screen name="ProfileCustom" children={ProfileNavigation} />
 		</MainNavigation.Navigator>
 	);
 };

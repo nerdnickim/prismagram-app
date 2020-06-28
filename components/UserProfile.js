@@ -79,6 +79,8 @@ const UserProfile = ({
 	followers,
 	following,
 	fullName,
+	firstName,
+	lastName,
 	username,
 	posts,
 	isMe,
@@ -97,7 +99,10 @@ const UserProfile = ({
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
-			headerRight: () => (isMe ? <UserCustom /> : null),
+			headerRight: () =>
+				isMe ? (
+					<UserCustom username={username} firstName={firstName} lastName={lastName} />
+				) : null,
 		});
 	}, []);
 

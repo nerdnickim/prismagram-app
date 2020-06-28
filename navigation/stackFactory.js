@@ -4,7 +4,7 @@ import { stackStyle } from "./config";
 import Detail from "../screens/Detail";
 import styles from "../styles";
 import UserDetail from "../screens/UserDetail";
-import ProfileNavigation from "./ProfileNavigation";
+import ProfileOptions from "../screens/ProfileDetail/ProfileOptions";
 
 const StackFactory = createStackNavigator();
 
@@ -41,6 +41,7 @@ export default ({ route }) => {
 					title: route.state?.routes[1]?.params?.username,
 				}}
 			/>
+			<StackFactory.Screen name="ProfileOptions" component={ProfileOptions} />
 		</StackFactory.Navigator>
 	);
 };
