@@ -9,12 +9,21 @@ const SEE_ROOMS = gql`
 	{
 		seeRooms {
 			id
+			participants {
+				isMe
+				id
+				username
+			}
 			messages {
 				id
 				text
 				to {
+					id
 					username
-					avatar
+				}
+				from {
+					id
+					username
 				}
 			}
 		}
@@ -50,24 +59,33 @@ export default () => {
 
 	const DATA = [data?.seeRooms];
 
-	const Item = ({ id, item }) => (
-		<ItemView>
-			<Touchable
-				onPress={() =>
-					navigation.navigate("message", { username: item[0].to.username, roomId: id })
-				}
-			>
-				<Text>Message: {item[0].text}</Text>
-				<Text>{item[0].to.username}</Text>
-			</Touchable>
-		</ItemView>
-	);
+	const Item = ({ id, item, part }) => {
+		return (
+			<ItemView key={id}>
+				<Touchable
+					onPress={() =>
+						navigation.navigate("message", {
+							username: part.map((a) => (a.isMe === false ? a.username : null)),
+							roomId: id,
+							messages: item,
+							part,
+						})
+					}
+				>
+					<Text>Message</Text>
+					<Text>{part.map((a) => (a.isMe === false ? a.username : null))}</Text>
+				</Touchable>
+			</ItemView>
+		);
+	};
 
 	return (
 		<View>
 			<FlatList
 				data={DATA}
-				renderItem={({ item }) => item.map((r) => <Item id={r.id} item={r.messages} />)}
+				renderItem={({ item }) =>
+					item?.map((r) => <Item id={r.id} item={r.messages} part={r.participants} />)
+				}
 				keyExtractor={(item) => null}
 			/>
 		</View>
