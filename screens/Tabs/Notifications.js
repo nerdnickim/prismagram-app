@@ -1,8 +1,8 @@
 import * as React from "react";
+import { FlatList, TouchableOpacity } from "react-native";
 import styled from "styled-components";
 import { useQuery } from "react-apollo-hooks";
 import { ME } from "../../sharedQueries";
-import { FlatList, TouchableOpacity } from "react-native";
 import Loader from "../../components/Loader";
 
 const View = styled.View``;
@@ -36,7 +36,9 @@ export default ({ navigation }) => {
 				<TouchableOpacity onPress={() => navigation.navigate("UserDetail", { username })}>
 					<Text>{username}</Text>
 				</TouchableOpacity>
-				<Text>님이 회원님의 게시물을 좋아합니다</Text>
+				<View>
+					<Text>님이 회원님의 게시물을 좋아합니다</Text>
+				</View>
 			</ItemView>
 		);
 	};

@@ -66,7 +66,7 @@ export default ({ route }) => {
 						</ItemView>
 					))
 				}
-				keyExtractor={(item) => item.following.map((u) => u.id)}
+				keyExtractor={(item) => null}
 			/>
 		</View>
 	);

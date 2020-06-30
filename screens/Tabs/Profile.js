@@ -17,7 +17,7 @@ const Text = styled.Text``;
 export default ({ navigation }) => {
 	const { data, loading } = useQuery(ME);
 	React.useEffect(() => {
-		if (data.me) {
+		if (data?.me) {
 			navigation.setParams("title", data.me.username);
 		}
 	}, [data]);
