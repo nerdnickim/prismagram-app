@@ -3,7 +3,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Messages from "../screens/Messages/Messages";
 import Message from "../screens/Messages/Message";
 import { stackStyle } from "./config";
-import styles from "../styles";
 
 const MessageStackNavi = createStackNavigator();
 
@@ -14,6 +13,7 @@ export default () => {
 				headerStyle: { ...stackStyle },
 				cardStyle: { backgroundColor: "white" },
 			}}
+			initialRouteName="messages"
 		>
 			<MessageStackNavi.Screen name="messages" component={Messages} />
 			<MessageStackNavi.Screen name="message" component={Message} />

@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+import { useNavigation } from "@react-navigation/native";
 
 const View = styled.View`
 	justify-content: center;
@@ -9,8 +10,19 @@ const View = styled.View`
 
 const Text = styled.Text``;
 
-export default () => (
-	<View>
-		<Text>Message</Text>
-	</View>
-);
+export default ({ route }) => {
+	const navigation = useNavigation();
+	const { roomId, username } = route.params;
+	console.log(roomId, username);
+
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerTitle: username,
+		});
+	}, []);
+	return (
+		<View>
+			<Text>Message</Text>
+		</View>
+	);
+};

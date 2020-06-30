@@ -2,7 +2,6 @@ import React from "react";
 import * as Permissions from "expo-permissions";
 import { Notifications } from "expo";
 import Constants from "expo-constants";
-import { Text, View, Vibration } from "react-native";
 
 export default () => {
 	const askPermission = async () => {
