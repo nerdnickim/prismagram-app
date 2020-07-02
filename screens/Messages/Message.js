@@ -3,11 +3,39 @@ import styled from "styled-components";
 import { useNavigation } from "@react-navigation/native";
 import AuthInput from "../../components/AuthInput";
 import useInput from "../../hooks/useInput";
+import {
+	TouchableWithoutFeedback,
+	Keyboard,
+	ScrollView,
+	KeyboardAvoidingView,
+	Platform,
+} from "react-native";
+import { gql } from "apollo-boost";
+import { useMutation, useSubscription } from "react-apollo-hooks";
+
+const SEND_MESSAGE = gql`
+	mutation sendMessage($roomId: String, $message: String!, $toId: String!) {
+		sendMessage(roomId: $roomId, message: $message, toId: $toId) {
+			id
+			text
+		}
+	}
+`;
+
+const NEW_MESSAGE = gql`
+	subscription newMessage($roomId: String!) {
+		newMessage(roomId: $roomId) {
+			id
+			text
+		}
+	}
+`;
 
 const View = styled.View`
-	justify-content: center;
-	align-items: center;
 	flex: 1;
+	justify-content: space-between;
+	padding: 40px 0;
+	align-items: center;
 `;
 
 const TextContain = styled.View`
@@ -24,39 +52,102 @@ const ToText = styled.Text`
 	margin-bottom: 10px;
 `;
 
-const InputContain = styled.View`
-	position: absolute;
-	bottom: 20;
-`;
+const InputContain = styled.View``;
 
 export default ({ route }) => {
 	const navigation = useNavigation();
-	const { roomId, username, messages, part } = route.params;
-	const messageInput = useInput("");
+	const { roomId, username, messages, part, toId } = route.params;
 
-	React.useLayoutEffect(() => {
+	const toPid = toId.filter((t) => (t === null ? null : t));
+
+	const messageInput = useInput("");
+	const [Smessages, setSMessages] = React.useState();
+	const [selfMessage, setSelfMessage] = React.useState([]);
+	const [sendMessageMutation] = useMutation(SEND_MESSAGE, {
+		variables: {
+			roomId,
+			message: messageInput.value,
+			toId: toPid[0],
+		},
+	});
+
+	const { data, loading, error } = useSubscription(NEW_MESSAGE, {
+		variables: {
+			roomId,
+		},
+	});
+
+	const handleMessage = () => {
+		if (loading) {
+			console.log("loading");
+		}
+		if (error) {
+			console.log("error");
+		}
+		console.log(data);
+	};
+
+	React.useEffect(() => {
+		handleMessage();
 		navigation.setOptions({
 			headerTitle: username,
 		});
-	}, []);
+	}, [data]);
+
+	const onsubmit = async (e) => {
+		e.preventDefault();
+		if (messageInput.value === "") {
+			return;
+		}
+		const {
+			data: { sendMessage },
+		} = await sendMessageMutation();
+		setSelfMessage([...selfMessage, sendMessage]);
+		messageInput.setValue("");
+	};
+
+	const keyboardVerticalOffset = Platform.OS === "ios" ? 100 : 0;
+
 	return (
 		<View>
-			<TextContain>
-				{part.map((p) =>
-					p.isMe === true
-						? messages.map((m) =>
-								p.id === m.from.id ? (
-									<FromText> {m.text} </FromText>
-								) : (
-									<ToText>{m.text}</ToText>
-								)
-						  )
-						: null
-				)}
-			</TextContain>
-			<InputContain>
-				<AuthInput {...messageInput} placeholder={"Send to message"} />
-			</InputContain>
+			<ScrollView
+				style={{
+					maxHeight: 460,
+				}}
+			>
+				<TextContain>
+					{part.map((p) =>
+						p.isMe === true
+							? messages.map((m) =>
+									p.id === m.from.id ? (
+										<FromText key={m.id}> {m.text} </FromText>
+									) : (
+										<ToText key={m.id}>{m.text}</ToText>
+									)
+							  )
+							: null
+					)}
+					{selfMessage.map((t) => (
+						<FromText key={t.id}>{t.text}</FromText>
+					))}
+				</TextContain>
+			</ScrollView>
+			<KeyboardAvoidingView
+				behavior="position"
+				keyboardVerticalOffset={keyboardVerticalOffset}
+			>
+				<InputContain>
+					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+						<AuthInput
+							{...messageInput}
+							placeholder={"Send to message"}
+							returnKeyType="send"
+							autoCorrect={false}
+							onSubmitEditing={onsubmit}
+						/>
+					</TouchableWithoutFeedback>
+				</InputContain>
+			</KeyboardAvoidingView>
 		</View>
 	);
 };

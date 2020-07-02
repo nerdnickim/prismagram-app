@@ -4,6 +4,7 @@ import { gql } from "apollo-boost";
 import { useQuery } from "react-apollo-hooks";
 import { FlatList, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Loader from "../../components/Loader";
 
 const SEE_ROOMS = gql`
 	{
@@ -55,13 +56,14 @@ const Touchable = styled.TouchableOpacity`
 
 export default () => {
 	const navigation = useNavigation();
-	const { data, loading } = useQuery(SEE_ROOMS);
+	const { data, loading } = useQuery(SEE_ROOMS, {
+		fetchPolicy: "cache-and-network",
+	});
 
 	const DATA = [data?.seeRooms];
-
 	const Item = ({ id, item, part }) => {
 		return (
-			<ItemView key={id}>
+			<ItemView>
 				<Touchable
 					onPress={() =>
 						navigation.navigate("message", {
@@ -69,6 +71,7 @@ export default () => {
 							roomId: id,
 							messages: item,
 							part,
+							toId: part.map((a) => (a.isMe === false ? a.id : null)),
 						})
 					}
 				>
@@ -79,7 +82,9 @@ export default () => {
 		);
 	};
 
-	return (
+	return loading ? (
+		<Loader />
+	) : (
 		<View>
 			<FlatList
 				data={DATA}

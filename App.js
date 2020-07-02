@@ -6,10 +6,11 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-community/async-storage";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { persistCache } from "apollo-cache-persist";
-import ApolloClient from "apollo-boost";
+import { ApolloClient } from "apollo-client";
+import { HttpLink, createHttpLink } from "apollo-link-http";
+import { setContext } from "apollo-link-context";
 import { ThemeProvider } from "styled-components";
 import { ApolloProvider } from "react-apollo-hooks";
-import apolloClientOptions from "./apollo";
 import { YellowBox } from "react-native";
 import styles from "./styles";
 import NavController from "./components/NavController";
@@ -32,17 +33,25 @@ export default function App() {
 				cache,
 				storage: AsyncStorage,
 			});
+
+			const authLink = setContext((_, { headers }) => {
+				const token = AsyncStorage.getItem("jwt");
+				console.log(headers);
+				return {
+					headers: {
+						...headers,
+						Authorization: token ? `/Bearer ${token}` : console.log("hey"),
+					},
+				};
+			});
+
+			const httpLink = createHttpLink({
+				uri: "https://cloneinggram-backend.herokuapp.com",
+			});
+
 			const client = new ApolloClient({
 				cache,
-				request: async (operation) => {
-					const token = await AsyncStorage.getItem("jwt");
-					operation.setContext({
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					});
-				},
-				...apolloClientOptions,
+				link: authLink.concat(httpLink),
 			});
 			const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
 			if (!isLoggedIn || isLoggedIn === "false") {
