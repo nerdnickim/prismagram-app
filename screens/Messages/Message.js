@@ -118,7 +118,7 @@ export default ({ route }) => {
 		}
 	};
 
-	const keyboardVerticalOffset = Platform.OS === "ios" ? 100 : 0;
+	const keyboardVerticalOffset = Platform.OS === "ios" ? 70 : 0;
 
 	return (
 		<Vieww>
@@ -146,7 +146,9 @@ export default ({ route }) => {
 			<KeyboardAvoidingView
 				behavior="position"
 				keyboardVerticalOffset={keyboardVerticalOffset}
-				style={{ alignSelf: "center" }}
+				style={{
+					alignItems: "center",
+				}}
 			>
 				<InputContain>
 					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
