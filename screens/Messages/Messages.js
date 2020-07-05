@@ -57,7 +57,7 @@ const Touchable = styled.TouchableOpacity`
 export default () => {
 	const navigation = useNavigation();
 	const { data, loading } = useQuery(SEE_ROOMS, {
-		fetchPolicy: "cache-and-network",
+		fetchPolicy: "network-only",
 	});
 
 	const DATA = [data?.seeRooms];

@@ -8,13 +8,18 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { persistCache } from "apollo-cache-persist";
 import { ApolloClient } from "apollo-client";
 import { HttpLink, createHttpLink } from "apollo-link-http";
-import { setContext } from "apollo-link-context";
+import { ApolloLink, split } from "apollo-link";
+import { WebSocketLink } from "apollo-link-ws";
+import { onError } from "apollo-link-error";
 import { ThemeProvider } from "styled-components";
 import { ApolloProvider } from "react-apollo-hooks";
 import { YellowBox } from "react-native";
 import styles from "./styles";
 import NavController from "./components/NavController";
 import { AuthProvider } from "./AuthContext";
+import { setContext } from "apollo-link-context";
+import { getMainDefinition } from "apollo-utilities";
+
 YellowBox.ignoreWarnings(["Remote debugger"]);
 
 export default function App() {
@@ -34,25 +39,55 @@ export default function App() {
 				storage: AsyncStorage,
 			});
 
-			const authLink = setContext((_, { headers }) => {
-				const token = AsyncStorage.getItem("jwt");
-				console.log(headers);
+			const authLink = setContext(async (_, { headers }) => {
+				const token = await AsyncStorage.getItem("jwt");
+
 				return {
 					headers: {
 						...headers,
-						Authorization: token ? `/Bearer ${token}` : console.log("hey"),
+						Authorization: token ? `Bearer ${token}` : console.log("hey"),
 					},
 				};
 			});
 
-			const httpLink = createHttpLink({
+			const httpLink = new HttpLink({
 				uri: "https://cloneinggram-backend.herokuapp.com",
+			});
+
+			const wsLink = new WebSocketLink({
+				uri: `ws://cloneinggram-backend.herokuapp.com`,
+				options: {
+					reconnect: true,
+				},
 			});
 
 			const client = new ApolloClient({
 				cache,
-				link: authLink.concat(httpLink),
+				link: ApolloLink.from([
+					authLink,
+					onError(({ graphQLErrors, networkError }) => {
+						if (graphQLErrors)
+							graphQLErrors.map(({ message, locations, path }) =>
+								console.log(
+									`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+								)
+							);
+						if (networkError) console.log(`[Network error]: ${networkError}`);
+					}),
+					split(
+						({ query }) => {
+							const definition = getMainDefinition(query);
+							return (
+								definition.kind === "OperationDefinition" &&
+								definition.operation === "subscription"
+							);
+						},
+						wsLink,
+						httpLink
+					),
+				]),
 			});
+
 			const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
 			if (!isLoggedIn || isLoggedIn === "false") {
 				setIsLoggedIn(false);

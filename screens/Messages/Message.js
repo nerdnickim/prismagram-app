@@ -9,6 +9,7 @@ import {
 	ScrollView,
 	KeyboardAvoidingView,
 	Platform,
+	View,
 } from "react-native";
 import { gql } from "apollo-boost";
 import { useMutation, useSubscription } from "react-apollo-hooks";
@@ -27,42 +28,48 @@ const NEW_MESSAGE = gql`
 		newMessage(roomId: $roomId) {
 			id
 			text
+			to {
+				id
+				username
+			}
+			from {
+				id
+				username
+			}
 		}
 	}
 `;
 
-const View = styled.View`
+const Vieww = styled.View`
 	flex: 1;
 	justify-content: space-between;
 	padding: 40px 0;
-	align-items: center;
-`;
-
-const TextContain = styled.View`
-	width: 300;
 `;
 
 const FromText = styled.Text`
-	text-align: right;
 	margin-bottom: 10px;
+	padding: 8px 10px;
+	border: 1px solid #326bf9;
+	border-radius: 6px;
 `;
 
 const ToText = styled.Text`
-	text-align: left;
 	margin-bottom: 10px;
+	padding: 8px 10px;
+	border: 1px solid #a26cf7;
+	border-radius: 6px;
 `;
 
 const InputContain = styled.View``;
 
 export default ({ route }) => {
 	const navigation = useNavigation();
-	const { roomId, username, messages, part, toId } = route.params;
+	const { roomId, username, messages: oldMessages, part, toId } = route.params;
 
 	const toPid = toId.filter((t) => (t === null ? null : t));
 
 	const messageInput = useInput("");
-	const [Smessages, setSMessages] = React.useState();
-	const [selfMessage, setSelfMessage] = React.useState([]);
+	const [mArray, setMArray] = React.useState(oldMessages || []);
 	const [sendMessageMutation] = useMutation(SEND_MESSAGE, {
 		variables: {
 			roomId,
@@ -75,16 +82,20 @@ export default ({ route }) => {
 		variables: {
 			roomId,
 		},
+		fetchPolicy: "network-only",
 	});
 
-	const handleMessage = () => {
+	const handleMessage = async () => {
 		if (loading) {
 			console.log("loading");
 		}
 		if (error) {
 			console.log("error");
 		}
-		console.log(data);
+		if (data) {
+			const { newMessage } = await data;
+			setMArray((previous) => [...previous, newMessage]);
+		}
 	};
 
 	React.useEffect(() => {
@@ -99,42 +110,43 @@ export default ({ route }) => {
 		if (messageInput.value === "") {
 			return;
 		}
-		const {
-			data: { sendMessage },
-		} = await sendMessageMutation();
-		setSelfMessage([...selfMessage, sendMessage]);
-		messageInput.setValue("");
+		try {
+			await sendMessageMutation();
+			messageInput.setValue("");
+		} catch (e) {
+			console.log(e);
+		}
 	};
 
 	const keyboardVerticalOffset = Platform.OS === "ios" ? 100 : 0;
 
 	return (
-		<View>
+		<Vieww>
 			<ScrollView
 				style={{
 					maxHeight: 460,
 				}}
 			>
-				<TextContain>
-					{part.map((p) =>
-						p.isMe === true
-							? messages.map((m) =>
-									p.id === m.from.id ? (
-										<FromText key={m.id}> {m.text} </FromText>
-									) : (
-										<ToText key={m.id}>{m.text}</ToText>
-									)
-							  )
-							: null
-					)}
-					{selfMessage.map((t) => (
-						<FromText key={t.id}>{t.text}</FromText>
-					))}
-				</TextContain>
+				{part.map((p) =>
+					p.isMe === true
+						? mArray.map((m) =>
+								p.id === m.from.id ? (
+									<View key={m.id} style={{ alignSelf: "flex-end", marginRight: 20 }}>
+										<FromText> {m.text} </FromText>
+									</View>
+								) : (
+									<View key={m.id} style={{ alignSelf: "flex-start", marginLeft: 20 }}>
+										<ToText>{m.text}</ToText>
+									</View>
+								)
+						  )
+						: null
+				)}
 			</ScrollView>
 			<KeyboardAvoidingView
 				behavior="position"
 				keyboardVerticalOffset={keyboardVerticalOffset}
+				style={{ alignSelf: "center" }}
 			>
 				<InputContain>
 					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -148,6 +160,6 @@ export default ({ route }) => {
 					</TouchableWithoutFeedback>
 				</InputContain>
 			</KeyboardAvoidingView>
-		</View>
+		</Vieww>
 	);
 };

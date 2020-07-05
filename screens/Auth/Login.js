@@ -46,6 +46,7 @@ export default ({ navigation, route }) => {
 				navigation.navigate("SignUp", { email: value });
 			}
 		} catch (e) {
+			console.log(e);
 			Alert.alert("Can't Log in");
 		} finally {
 			setLoading(false);
