@@ -9,7 +9,6 @@ import styles from "../styles";
 import { gql } from "apollo-boost";
 import { useMutation } from "react-apollo-hooks";
 import { withNavigation } from "@react-navigation/compat";
-import Notification from "./Notification";
 
 export const TOGGLE_LIKE = gql`
 	mutation toggleLike($postId: String!) {
@@ -88,7 +87,6 @@ const Post = ({
 			setLikeCountS(likeCountS - 1);
 		} else {
 			setLikeCountS(likeCountS + 1);
-			Notification();
 		}
 		setIsLiked((p) => !p);
 		try {

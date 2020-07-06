@@ -4,6 +4,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import RBSheet from "react-native-raw-bottom-sheet";
+import { useLogOut } from "../AuthContext";
 
 const View = styled.View``;
 
@@ -13,20 +14,27 @@ const Touchable = styled.TouchableOpacity`
 
 const Button = styled.TouchableOpacity``;
 
-const ListContain = styled.View`
+const BtnContain = styled.View`
 	border-bottom-width: 1;
 	padding-top: 10;
 	padding-left: 20;
 	padding-bottom: 10;
 `;
 
+const ListContain = styled.View``;
+
 export default ({ username, firstName, lastName }) => {
 	const navigation = useNavigation();
 	const refRBSheet = useRef();
+	const logOut = useLogOut();
 
 	const moving = () => {
 		navigation.navigate("ProfileOptions", { username, firstName, lastName });
 		refRBSheet.current.close();
+	};
+
+	const logOutHandle = () => {
+		logOut();
 	};
 
 	return (
@@ -51,9 +59,16 @@ export default ({ username, firstName, lastName }) => {
 				}}
 			>
 				<ListContain>
-					<Button onPress={moving}>
-						<Text style={{ fontSize: 20 }}>Edit Name</Text>
-					</Button>
+					<BtnContain>
+						<Button onPress={moving}>
+							<Text style={{ fontSize: 20 }}>Edit Name</Text>
+						</Button>
+					</BtnContain>
+					<BtnContain>
+						<Button onPress={logOutHandle}>
+							<Text style={{ fontSize: 20 }}>Log Out</Text>
+						</Button>
+					</BtnContain>
 				</ListContain>
 			</RBSheet>
 		</>

@@ -7,17 +7,10 @@ import { Ionicons } from "@expo/vector-icons";
 import constans from "../constans";
 import SquarePhoto from "./SquarePhoto";
 import Post from "./Post";
-import { gql } from "apollo-boost";
-import { useMutation } from "react-apollo-hooks";
 import FollowBtn from "./FollowBtn";
 import { useNavigation } from "@react-navigation/native";
 import UserCustom from "./UserCustom";
-
-const LOG_OUT = gql`
-	mutation logUserOut {
-		logUserOut @client
-	}
-`;
+import { useLogOut } from "../AuthContext";
 
 const ProfileHeader = styled.View`
 	padding: 20px;
@@ -94,13 +87,6 @@ const UserProfile = ({
 	const toggleGrid = () => setIsGrid((i) => !i);
 	const navigation = useNavigation();
 
-	const [logOut] = useMutation(LOG_OUT);
-
-	const logOutHandle = async () => {
-		await logOut();
-		navigation.navigate("AuthNavigation");
-	};
-
 	useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () =>
@@ -145,13 +131,7 @@ const UserProfile = ({
 						</Stat>
 					</ProfileStats>
 					<LogContain>
-						{isMe ? (
-							<BtnPress onPress={logOutHandle}>
-								<BtnName>{"Log Out"}</BtnName>
-							</BtnPress>
-						) : (
-							<FollowBtn id={id} isFollowing={isFollowing} />
-						)}
+						{isMe ? null : <FollowBtn id={id} isFollowing={isFollowing} />}
 					</LogContain>
 				</HeaderColumn>
 			</ProfileHeader>
