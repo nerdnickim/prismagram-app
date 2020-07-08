@@ -46,28 +46,36 @@ const Circle = styled.View`
 export default ({ navigation }) => {
 	const [loading, setLoading] = useState(true);
 	const [hasPermission, setHasPermission] = useState(false);
-	const [selected = [], setSelected] = useState([]);
+	const [selected, setSelected] = useState();
+	const [selects, setSelects] = useState(selected || []);
 	const [allPhotos, setAllPhotos] = useState();
 	let [focused, setFocued] = useState(false);
 
 	const changeSelectedPhoto = (photo) => {
-		setSelected(photo);
-		console.log(selected);
+		if (focused === true) {
+			setSelects([...selects, photo]);
+			if ((selects.map((i) => i).indexOf(photo) !== -1) === true) {
+				const pop = selects.filter((i) => i !== photo);
+				setSelects(pop);
+			} else {
+				console.log("Fuck");
+			}
+		}
+		if (focused === false) {
+			setSelected(photo);
+		}
 	};
 
 	const changeFocued = () => {
 		setFocued((f) => !f);
-		multiplePhotos();
+		setSelects([selected]);
 	};
-
-	const multiplePhotos = () => {};
 
 	const getPhotos = async () => {
 		try {
 			const { assets } = await MediaLibrary.getAssetsAsync();
 			const [firstPhoto] = assets;
 			setSelected(firstPhoto);
-
 			setAllPhotos(assets);
 		} catch (e) {
 			console.log(e);
@@ -88,7 +96,10 @@ export default ({ navigation }) => {
 		}
 	};
 	const handleSelected = () => {
-		navigation.navigate("UploadPhoto", { photo: selected });
+		navigation.navigate(
+			"UploadPhoto",
+			focused === true ? { photo: selects.map((photo) => photo) } : { photo: selected }
+		);
 	};
 	useEffect(() => {
 		askPermission();
@@ -104,7 +115,11 @@ export default ({ navigation }) => {
 							<Header>
 								<Image
 									style={{ width: constans.width, height: constans.height / 2 }}
-									source={{ uri: selected.uri }}
+									source={
+										focused === true
+											? { uri: selects[selects.length - 1].uri }
+											: { uri: selected.uri }
+									}
 								/>
 
 								<Button onPress={handleSelected}>
@@ -123,21 +138,32 @@ export default ({ navigation }) => {
 							<ScrollView
 								contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap" }}
 							>
-								{allPhotos.map((photo) => (
-									<TouchableOpacity
-										key={photo.id}
-										onPress={() => changeSelectedPhoto(photo)}
-									>
-										<Image
-											style={{
-												width: constans.width / 3,
-												height: constans.height / 6,
-												opacity: photo.id === selected.id ? 0.5 : 1,
+								{allPhotos.map((photo) => {
+									return (
+										<TouchableOpacity
+											key={photo.id}
+											onPress={() => {
+												changeSelectedPhoto(photo);
 											}}
-											source={{ uri: photo.uri }}
-										/>
-									</TouchableOpacity>
-								))}
+										>
+											<Image
+												style={{
+													width: constans.width / 3,
+													height: constans.height / 6,
+													opacity:
+														focused === true
+															? selects.map((i) => i.id).indexOf(photo.id) !== -1
+																? 0.5
+																: 1
+															: photo.id === selected.id
+															? 0.5
+															: 1,
+												}}
+												source={{ uri: photo.uri }}
+											/>
+										</TouchableOpacity>
+									);
+								})}
 							</ScrollView>
 						</>
 					) : null}
