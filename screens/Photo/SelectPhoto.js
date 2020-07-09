@@ -57,8 +57,6 @@ export default ({ navigation }) => {
 			if ((selects.map((i) => i).indexOf(photo) !== -1) === true) {
 				const pop = selects.filter((i) => i !== photo);
 				setSelects(pop);
-			} else {
-				console.log("Fuck");
 			}
 		}
 		if (focused === false) {
@@ -96,10 +94,7 @@ export default ({ navigation }) => {
 		}
 	};
 	const handleSelected = () => {
-		navigation.navigate(
-			"UploadPhoto",
-			focused === true ? { photo: selects.map((photo) => photo) } : { photo: selected }
-		);
+		navigation.navigate("UploadPhoto", { photo: focused ? selects : selected, focused });
 	};
 	useEffect(() => {
 		askPermission();
@@ -117,7 +112,9 @@ export default ({ navigation }) => {
 									style={{ width: constans.width, height: constans.height / 2 }}
 									source={
 										focused === true
-											? { uri: selects[selects.length - 1].uri }
+											? selects.length === 0
+												? { uri: "null" }
+												: { uri: selects[selects.length - 1].uri }
 											: { uri: selected.uri }
 									}
 								/>

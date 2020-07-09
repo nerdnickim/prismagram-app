@@ -56,6 +56,7 @@ const Button = styled.TouchableOpacity`
 
 export default ({ route, navigation }) => {
 	const [loading, setLoading] = React.useState(false);
+	const focused = route.params.focused;
 	const photoS = route.params.photo;
 	const captionInput = useInput("");
 	const locationInput = useInput("");
@@ -68,19 +69,32 @@ export default ({ route, navigation }) => {
 		if (captionInput.value === "" || locationInput.value === "") {
 			Alert.alert("All fields are required ");
 		}
+
 		const formData = new FormData();
-		const name = photoS.filename;
+		const name = focused ? photoS[photoS.length - 1].filename : photoS.filename;
 		const [, type] = name.split(".");
-		formData.append("file", {
-			name: name,
-			type: type.toLowerCase(),
-			uri: photoS.uri,
-		});
+
+		focused
+			? photoS.map((item) => {
+					const itemName = item.filename;
+					const [, type] = itemName.split(".");
+					formData.append("files", {
+						name: itemName,
+						type: type.toLowerCase(),
+						uri: item.uri,
+					});
+			  })
+			: formData.append("file", {
+					name: name,
+					type: type.toLowerCase(),
+					uri: photoS.uri,
+			  });
+
 		try {
 			setLoading(true);
 			const {
 				data: { location },
-			} = await axios.post("http://localhost:4000/api/upload", formData, {
+			} = await axios.post("http://localhost:4000/api/uploads", formData, {
 				headers: {
 					"content-type": "multipart/form-data",
 				},
@@ -92,7 +106,7 @@ export default ({ route, navigation }) => {
 				variables: {
 					caption: captionInput.value,
 					location: locationInput.value,
-					files: [location],
+					files: focused ? location : [location],
 				},
 			});
 			if (upload.id) {
@@ -111,7 +125,7 @@ export default ({ route, navigation }) => {
 			<Container>
 				<Image
 					style={{ width: constans.width / 4, height: constans.height / 8 }}
-					source={{ uri: photoS.uri }}
+					source={{ uri: focused ? photoS[photoS.length - 1].uri : photoS.uri }}
 				/>
 				<Form>
 					<STextInput
