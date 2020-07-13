@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Image, Platform } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Image, Platform, TouchableOpacity } from "react-native";
 import Swiper from "react-native-swiper";
 import styled from "styled-components";
 import PropTypes from "prop-types";
@@ -9,6 +9,7 @@ import styles from "../styles";
 import { gql } from "apollo-boost";
 import { useMutation } from "react-apollo-hooks";
 import { withNavigation } from "@react-navigation/compat";
+import PostOptions from "./PostOptions";
 
 export const TOGGLE_LIKE = gql`
 	mutation toggleLike($postId: String!) {
@@ -22,11 +23,18 @@ const Container = styled.View`
 const Header = styled.View`
 	padding: 10px;
 	flex-direction: row;
-	align-items: center;
+	justify-content: space-between;
 `;
 const HeaderUserContainer = styled.View`
 	margin-left: 8px;
 `;
+
+const UserWrapper = styled.View`
+	flex-direction: row;
+`;
+
+const Options = styled.View``;
+
 const Touchable = styled.TouchableOpacity``;
 
 const Bold = styled.Text`
@@ -63,6 +71,7 @@ const CommentsCount = styled.Text`
 const CreatedAt = styled.Text``;
 
 const Post = ({
+	userId,
 	id,
 	user,
 	location,
@@ -125,22 +134,36 @@ const Post = ({
 	return (
 		<Container>
 			<Header>
-				<Touchable
-					onPress={() => navigation.navigate("UserDetail", { username: user.username })}
-				>
-					<Image
-						style={{ width: 40, height: 40, borderRadius: 20 }}
-						source={{ uri: user.avatar || avatar }}
-					/>
-				</Touchable>
-				<Touchable
-					onPress={() => navigation.navigate("UserDetail", { username: user.username })}
-				>
-					<HeaderUserContainer>
-						<Bold>{user.username}</Bold>
-						<Location>{location}</Location>
-					</HeaderUserContainer>
-				</Touchable>
+				<UserWrapper>
+					<Touchable
+						onPress={() => navigation.navigate("UserDetail", { username: user.username })}
+					>
+						<Image
+							style={{ width: 40, height: 40, borderRadius: 20 }}
+							source={{ uri: user.avatar || avatar }}
+						/>
+					</Touchable>
+					<Touchable
+						onPress={() => navigation.navigate("UserDetail", { username: user.username })}
+					>
+						<HeaderUserContainer>
+							<Bold>{user.username}</Bold>
+							<Location>{location}</Location>
+						</HeaderUserContainer>
+					</Touchable>
+				</UserWrapper>
+				<Options>
+					<TouchableOpacity>
+						{user.isMe ? (
+							<PostOptions
+								id={id}
+								location={location}
+								caption={caption}
+								userId={userId}
+							/>
+						) : null}
+					</TouchableOpacity>
+				</Options>
 			</Header>
 			<Swiper style={{ height: constans.height / 2.5 }}>
 				{files.map((file) => (

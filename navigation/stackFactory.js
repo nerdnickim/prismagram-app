@@ -7,6 +7,7 @@ import UserDetail from "../screens/UserDetail";
 import ProfileOptions from "../screens/ProfileDetail/ProfileOptions";
 import FollowerShow from "../screens/ProfileDetail/FollowerShow";
 import FollowingShow from "../screens/ProfileDetail/FollowingShow";
+import PostEdit from "../screens/PostEdit";
 
 const StackFactory = createStackNavigator();
 
@@ -44,6 +45,7 @@ export default ({ route }) => {
 				}}
 			/>
 			<StackFactory.Screen name="ProfileOptions" component={ProfileOptions} />
+			<StackFactory.Screen name="PostEdit" component={PostEdit} />
 			<StackFactory.Screen name="FollowerShow" component={FollowerShow} />
 			<StackFactory.Screen name="FollowingShow" component={FollowingShow} />
 		</StackFactory.Navigator>

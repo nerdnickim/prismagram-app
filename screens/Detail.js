@@ -14,7 +14,12 @@ export default ({ route }) => {
 
 	return (
 		<ScrollView>
-			{loading ? <Loader /> : data && data.seeFullPost && <Post {...data.seeFullPost} />}
+			{loading ? (
+				<Loader />
+			) : (
+				data &&
+				data.seeFullPost && <Post {...data.seeFullPost} userId={route.params.id} />
+			)}
 		</ScrollView>
 	);
 };

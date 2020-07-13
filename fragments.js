@@ -9,6 +9,7 @@ export const POST_FRAGMENT = gql`
 			id
 			avatar
 			username
+			isMe
 		}
 		files {
 			id
