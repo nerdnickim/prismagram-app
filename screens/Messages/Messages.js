@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { gql } from "apollo-boost";
 import { useQuery } from "react-apollo-hooks";
 import { FlatList, Image } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import Loader from "../../components/Loader";
+import SendMessage from "../../components/SendMessage";
 
 const SEE_ROOMS = gql`
 	{
@@ -56,11 +57,23 @@ const Touchable = styled.TouchableOpacity`
 
 export default () => {
 	const navigation = useNavigation();
-	const { data, loading } = useQuery(SEE_ROOMS, {
+	const { data, loading, refetch } = useQuery(SEE_ROOMS, {
 		fetchPolicy: "network-only",
 	});
 
+	const refetchHandle = async () => {
+		navigation.addListener("focus", () => {
+			refetch();
+		});
+	};
+
 	const DATA = [data?.seeRooms];
+	React.useEffect(() => {
+		navigation.setOptions({
+			headerRight: () => <SendMessage />,
+		});
+		refetchHandle();
+	}, []);
 	const Item = ({ id, item, part }) => {
 		return (
 			<ItemView>
@@ -87,6 +100,7 @@ export default () => {
 	) : (
 		<View>
 			<FlatList
+				focusable={true}
 				data={DATA}
 				renderItem={({ item }) =>
 					item?.map((r) => <Item id={r.id} item={r.messages} part={r.participants} />)

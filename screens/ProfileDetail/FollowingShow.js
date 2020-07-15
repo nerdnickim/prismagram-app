@@ -51,7 +51,7 @@ export default ({ route }) => {
 										borderRadius: 20,
 									}}
 									source={{
-										uri: "item.avatar",
+										uri: item.avatar,
 									}}
 								/>
 								<Text>{u.username}</Text>

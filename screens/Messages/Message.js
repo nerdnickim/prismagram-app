@@ -14,7 +14,7 @@ import {
 import { gql } from "apollo-boost";
 import { useMutation, useSubscription } from "react-apollo-hooks";
 
-const SEND_MESSAGE = gql`
+export const SEND_MESSAGE = gql`
 	mutation sendMessage($roomId: String, $message: String!, $toId: String!) {
 		sendMessage(roomId: $roomId, message: $message, toId: $toId) {
 			id

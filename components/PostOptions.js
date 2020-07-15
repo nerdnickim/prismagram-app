@@ -62,7 +62,6 @@ export default ({ id, location, caption, userId }) => {
 
 						if (editPost) {
 							refRBSheet.current.close();
-							navigation.navigate("Home");
 						}
 					},
 				},
