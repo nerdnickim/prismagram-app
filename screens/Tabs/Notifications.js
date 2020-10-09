@@ -32,8 +32,9 @@ export default ({ navigation }) => {
 	};
 	const { data, loading, refetch } = useQuery(ME);
 
-	const Item = ({ user }) => {
+	const Item = ({ user, postId, img }) => {
 		const username = user.username;
+		console.log(postId);
 		return (
 			<ItemView>
 				<TouchableOpacity
@@ -53,9 +54,24 @@ export default ({ navigation }) => {
 				<View>
 					<Text>님이 회원님의 게시물을 좋아합니다</Text>
 				</View>
+				<TouchableOpacity onPress={() => navigation.navigate("Detail", { postId })}>
+					<Image style={{ width: 30, height: 30 }} source={{ uri: img }} />
+				</TouchableOpacity>
 			</ItemView>
 		);
 	};
+
+	const DATA = data.me.posts.map((s) => {
+		return s.likes.map((a) => {
+			return {
+				postId: s.id,
+				img: s.files[0].url,
+				me: data.me.id,
+				id: a.id,
+				user: a.user,
+			};
+		});
+	});
 
 	return (
 		<View>
@@ -66,12 +82,15 @@ export default ({ navigation }) => {
 					<FlatList
 						refreshing={refreshing}
 						onRefresh={onRefresh}
-						data={[data?.me?.posts.map((l) => l.likes.map((a) => a))]}
+						data={DATA}
 						renderItem={({ item }) =>
-							item[0].map((i) =>
-								data.me.id === i.user.id ? null : <Item key={i.user.id} user={i.user} />
+							item.map((s) =>
+								s.me === s.user.id ? null : (
+									<Item user={s.user} postId={s.postId} img={s.img} />
+								)
 							)
 						}
+						keyExtractor={(item) => item[0].id}
 					/>
 				)
 			)}

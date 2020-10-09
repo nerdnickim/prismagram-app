@@ -67,7 +67,13 @@ export default () => {
 		});
 	};
 
-	const DATA = [data?.seeRooms];
+	const DATA = data?.seeRooms.map((s) => {
+		return {
+			id: s.id,
+			item: s.messages,
+			part: s.participants,
+		};
+	});
 	React.useEffect(() => {
 		navigation.setOptions({
 			headerRight: () => <SendMessage />,
@@ -102,10 +108,8 @@ export default () => {
 			<FlatList
 				focusable={true}
 				data={DATA}
-				renderItem={({ item }) =>
-					item?.map((r) => <Item id={r.id} item={r.messages} part={r.participants} />)
-				}
-				keyExtractor={(item) => null}
+				renderItem={({ item }) => <Item id={item.id} item={item.item} part={item.part} />}
+				keyExtractor={(item) => item.id}
 			/>
 		</View>
 	);

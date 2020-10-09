@@ -8,6 +8,7 @@ import { useMutation } from "react-apollo-hooks";
 import useInput from "../hooks/useInput";
 import TextNavigation from "../navigation/TextNavigation";
 import { useNavigation } from "@react-navigation/native";
+import Loader from "./Loader";
 
 const ADD_COMMENT = gql`
 	mutation addComment($postId: String!, $text: String!) {
@@ -162,11 +163,15 @@ const Comment = ({ user, comments, location, caption, id }) => {
 				</Body>
 			</Contain>
 			<Meta>
-				<TextNavigation
-					value={commentInput.value}
-					onChange={(text) => commentInput.onChange(text)}
-					onSubmit={onSubmit}
-				/>
+				{loading ? (
+					<Loader />
+				) : (
+					<TextNavigation
+						value={commentInput.value}
+						onChange={(text) => commentInput.onChange(text)}
+						onSubmit={onSubmit}
+					/>
+				)}
 			</Meta>
 		</View>
 	);

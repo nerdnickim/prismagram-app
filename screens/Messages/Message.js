@@ -82,7 +82,7 @@ export default ({ route }) => {
 		variables: {
 			roomId,
 		},
-		fetchPolicy: "network-only",
+		fetchPolicy: "cache-first",
 	});
 
 	const handleMessage = async () => {
@@ -93,6 +93,7 @@ export default ({ route }) => {
 			console.log("error");
 		}
 		if (data) {
+			console.log(data);
 			const { newMessage } = await data;
 			setMArray((previous) => [...previous, newMessage]);
 		}
