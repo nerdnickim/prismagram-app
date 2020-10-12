@@ -34,7 +34,6 @@ export default ({ navigation }) => {
 
 	const Item = ({ user, postId, img }) => {
 		const username = user.username;
-		console.log(postId);
 		return (
 			<ItemView>
 				<TouchableOpacity
@@ -54,14 +53,16 @@ export default ({ navigation }) => {
 				<View>
 					<Text>님이 회원님의 게시물을 좋아합니다</Text>
 				</View>
-				<TouchableOpacity onPress={() => navigation.navigate("Detail", { postId })}>
+				<TouchableOpacity onPress={() => {
+					navigation.navigate("Detail", { id: postId })
+				}}>
 					<Image style={{ width: 30, height: 30 }} source={{ uri: img }} />
 				</TouchableOpacity>
 			</ItemView>
 		);
 	};
 
-	const DATA = data.me.posts.map((s) => {
+	const DATA = data?.me.posts.map((s) => {
 		return s.likes.map((a) => {
 			return {
 				postId: s.id,
@@ -78,22 +79,22 @@ export default ({ navigation }) => {
 			{loading ? (
 				<Loader />
 			) : (
-				data?.me && (
-					<FlatList
-						refreshing={refreshing}
-						onRefresh={onRefresh}
-						data={DATA}
-						renderItem={({ item }) =>
-							item.map((s) =>
-								s.me === s.user.id ? null : (
-									<Item user={s.user} postId={s.postId} img={s.img} />
+					data?.me && (
+						<FlatList
+							refreshing={refreshing}
+							onRefresh={onRefresh}
+							data={DATA}
+							renderItem={({ item }) =>
+								item.map((s) =>
+									s.me === s.user.id ? null : (
+										<Item user={s.user} postId={s.postId} img={s.img} />
+									)
 								)
-							)
-						}
-						keyExtractor={(item) => item[0].id}
-					/>
-				)
-			)}
+							}
+							keyExtractor={(item, index) => item[index].id}
+						/>
+					)
+				)}
 		</View>
 	);
 };
