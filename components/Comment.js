@@ -9,6 +9,7 @@ import useInput from "../hooks/useInput";
 import TextNavigation from "../navigation/TextNavigation";
 import { useNavigation } from "@react-navigation/native";
 import Loader from "./Loader";
+import { POST_DETAIL } from "../sharedQueries";
 
 const ADD_COMMENT = gql`
 	mutation addComment($postId: String!, $text: String!) {
@@ -84,9 +85,16 @@ const Comment = ({ user, comments, location, caption, id }) => {
 			postId: id,
 			text: commentInput.value,
 		},
+		refetchQueries: [{
+			query: POST_DETAIL,
+			variables: {
+				id
+			}
+		}]
+
 	});
 
-	const [selfComments, setSelfComments] = useState([]);
+	const [selfComments, setSelfComments] = useState([...comments]);
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
@@ -121,23 +129,7 @@ const Comment = ({ user, comments, location, caption, id }) => {
 				</Header>
 				<Body>
 					<CommentWrapper>
-						{comments?.map((c) => (
-							<CommentContain key={c.id}>
-								<CmtUser>
-									<TouchAble>
-										<Image
-											size={{ width: 40, height: 40, borderRadius: 20 }}
-											source={{ uri: c.user.avatar }}
-										/>
-									</TouchAble>
-									<TouchAble>
-										<Bold>{c.user.username}</Bold>
-									</TouchAble>
-								</CmtUser>
 
-								<Text>{c.text}</Text>
-							</CommentContain>
-						))}
 						{selfComments?.map((c) => (
 							<CommentContain key={c.id}>
 								<CmtUser>
@@ -166,12 +158,12 @@ const Comment = ({ user, comments, location, caption, id }) => {
 				{loading ? (
 					<Loader />
 				) : (
-					<TextNavigation
-						value={commentInput.value}
-						onChange={(text) => commentInput.onChange(text)}
-						onSubmit={onSubmit}
-					/>
-				)}
+						<TextNavigation
+							value={commentInput.value}
+							onChange={(text) => commentInput.onChange(text)}
+							onSubmit={onSubmit}
+						/>
+					)}
 			</Meta>
 		</View>
 	);
